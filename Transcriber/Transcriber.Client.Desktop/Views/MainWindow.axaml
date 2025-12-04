@@ -1,0 +1,130 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Transcriber.Client.Desktop.ViewModels"
+        Title="Audio Capture App" Width="600" Height="500"
+        x:Class="Transcriber.Client.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel">
+    
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel>
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" 
+                   HorizontalAlignment="Center" Margin="10">
+            <Button Content="Главная" Command="{Binding ShowMainCommand}"
+                   Margin="5" Padding="10,5"/>
+            <Button Content="Настройки аудио" Command="{Binding ShowSettingsCommand}"
+                   Margin="5" Padding="10,5"/>
+            <Button Content="Настройки текста" Command="{Binding ShowTextSettingsCommand}"
+                   Margin="5" Padding="10,5"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <ScrollViewer>
+            <StackPanel Margin="20">
+                
+                <!-- Main Tab -->
+                <StackPanel IsVisible="{Binding IsMainTabVisible}">
+                    <TextBlock Text="Захват аудио потока" FontSize="16" FontWeight="Bold"
+                              HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                    
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
+                        <ToggleButton Content="{Binding CaptureButtonText}" 
+                                     IsChecked="{Binding IsCapturing}"
+                                     Command="{Binding ToggleCaptureCommand}"
+                                     Width="150" Height="30" Margin="10"/>
+                    </StackPanel>
+
+                    <!-- Text Display -->
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5"
+                           Background="#F0F0F0" Padding="10" Margin="0,10">
+                        <ScrollViewer MaxHeight="200">
+                            <ItemsControl ItemsSource="{Binding TextLines}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" Margin="0,2" 
+                                                  TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                </StackPanel>
+
+                <!-- Audio Settings Tab -->
+                <StackPanel IsVisible="{Binding IsSettingsTabVisible}">
+                    <TextBlock Text="Настройки захвата аудио" FontSize="16" FontWeight="Bold"
+                              Margin="0,0,0,20"/>
+                    
+                    <StackPanel Margin="0,10">
+                        <TextBlock Text="Режим захвата:" FontWeight="Bold"/>
+                        <ComboBox SelectedIndex="0" Margin="0,5,0,10">
+                            <ComboBoxItem Content="Все аудио потоки"/>
+                            <ComboBoxItem Content="Только браузер"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10">
+                        <TextBlock Text="Белый список:" FontWeight="Bold"/>
+                        <TextBox Margin="0,5" Height="80" AcceptsReturn="True"
+                                TextWrapping="Wrap" 
+                                Watermark="Введите источники аудио (каждый с новой строки)"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10">
+                        <TextBlock Text="Чёрный список:" FontWeight="Bold"/>
+                        <TextBox Margin="0,5" Height="80" AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                Watermark="Введите источники для исключения (каждый с новой строки)"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Text Settings Tab -->
+                <StackPanel IsVisible="{Binding IsTextSettingsTabVisible}">
+                    <TextBlock Text="Настройки отображения текста" FontSize="16" FontWeight="Bold"
+                              Margin="0,0,0,20"/>
+                    
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" 
+                         Margin="0,10">
+                        <TextBlock Text="Позиция X:" Grid.Row="0" Grid.Column="0" 
+                                  VerticalAlignment="Center" Margin="0,5"/>
+                        <TextBox Text="{Binding TextSettings.WindowLeft}" Grid.Row="0" Grid.Column="1"
+                                Margin="5" Width="100" HorizontalAlignment="Left"/>
+                        
+                        <TextBlock Text="Позиция Y:" Grid.Row="1" Grid.Column="0"
+                                  VerticalAlignment="Center" Margin="0,5"/>
+                        <TextBox Text="{Binding TextSettings.WindowTop}" Grid.Row="1" Grid.Column="1"
+                                Margin="5" Width="100" HorizontalAlignment="Left"/>
+                        
+                        <TextBlock Text="Прозрачность окна:" Grid.Row="2" Grid.Column="0"
+                                  VerticalAlignment="Center" Margin="0,5"/>
+                        <Slider Value="{Binding TextSettings.WindowOpacity}" Grid.Row="2" Grid.Column="1"
+                               Minimum="0.1" Maximum="1.0" Margin="5"/>
+                        
+                        <TextBlock Text="Прозрачность текста:" Grid.Row="3" Grid.Column="0"
+                                  VerticalAlignment="Center" Margin="0,5"/>
+                        <Slider Value="{Binding TextSettings.TextOpacity}" Grid.Row="3" Grid.Column="1"
+                               Minimum="0.1" Maximum="1.0" Margin="5"/>
+                        
+                        <TextBlock Text="Размер текста:" Grid.Row="4" Grid.Column="0"
+                                  VerticalAlignment="Center" Margin="0,5"/>
+                        <TextBox Text="{Binding TextSettings.FontSize}" Grid.Row="4" Grid.Column="1"
+                                Margin="5" Width="100" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" 
+                   HorizontalAlignment="Right" Margin="10">
+            <Button Content="Свернуть" Command="{Binding MinimizeCommand}"
+                   Margin="5" Padding="15,5"/>
+            <Button Content="Выход" Command="{Binding ExitCommand}"
+                   Margin="5" Padding="15,5" Background="#FF4444"/>
+        </StackPanel>
+    </DockPanel>
+</Window>
