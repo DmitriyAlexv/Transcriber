@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using Splat;
 using Transcriber.Client.Desktop.ViewModels;
 using Transcriber.Client.Desktop.Views;
@@ -31,6 +32,9 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        Locator.CurrentMutable.Register(() => new StartView(), typeof(IViewFor<StartViewModel>));
+        Locator.CurrentMutable.Register(() => new SettingsView(), typeof(IViewFor<SettingsViewModel>));
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 

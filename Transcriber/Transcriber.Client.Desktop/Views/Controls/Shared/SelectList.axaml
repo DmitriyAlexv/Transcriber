@@ -1,0 +1,61 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:reactive="http://reactiveui.net"
+    x:Class="Transcriber.Client.Desktop.Views.Controls.Shared.SelectList"
+    x:TypeArguments="vm:SelectListViewModel"
+    xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.Controls.Shared">
+    
+    <Border BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="6" Padding="8">
+        <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" ColumnSpacing="4">
+            <TextBlock Grid.Row="0" Grid.Column="0" 
+                      Text="Элементы списка" 
+                      FontWeight="Bold"
+                      Margin="0,0,0,8"/>
+            
+            <StackPanel Grid.Row="0" Grid.Column="1" 
+                       Orientation="Horizontal" 
+                       Spacing="4">
+                <Button x:Name="AddButton" 
+                       Content="+" 
+                       Width="30"
+                       Height="30"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+                <Button x:Name="RemoveButton" 
+                       Content="-" 
+                       Width="30"
+                       Height="30"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+            </StackPanel>
+            
+            <ListBox x:Name="ItemsList" 
+                    Grid.Row="1" 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="2"
+                    BorderThickness="0"
+                    Background="Transparent">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBox Text="{Binding .}"
+                                Watermark="Введите значение..."
+                                Margin="0,4">
+                            <TextBox.Styles>
+                                <Style Selector="TextBox">
+                                    <Setter Property="BorderBrush" Value="#7F8C8D"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                </Style>
+                                <Style Selector="TextBox:pointerover">
+                                    <Setter Property="BorderBrush" Value="#3498DB"/>
+                                </Style>
+                            </TextBox.Styles>
+                        </TextBox>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</reactive:ReactiveUserControl>

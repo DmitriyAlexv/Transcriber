@@ -1,0 +1,43 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:services="clr-namespace:Transcriber.Client.Desktop.Services"
+    xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:bottomNavigationButton="clr-namespace:Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.Controls.BottomNavigationBar.BottomNavigationButton"
+    x:DataType="bottomNavigationButton:BottomNavigationButtonViewModel"
+    x:TypeArguments="bottomNavigationButton:BottomNavigationButtonViewModel">
+    
+    <UserControl.Resources>
+        <services:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </UserControl.Resources>
+    
+    <UserControl.Styles>
+        <Style Selector="Button.NavigationButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        
+        <Style Selector="material|MaterialIcon.NavigationIcon">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <Button Classes="NavigationButton"
+            Command="{Binding Command}">
+        <StackPanel Orientation="Vertical">
+            <material:MaterialIcon Kind="{Binding IconKind}"
+                                   Classes="NavigationIcon"
+                                   Foreground="{Binding IsActive, 
+                                   Converter={StaticResource BoolToColorConverter}}"/>
+        </StackPanel>
+    </Button>
+</reactive:ReactiveUserControl>

@@ -1,0 +1,29 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.SettingsView"
+    x:TypeArguments="vm:SettingsViewModel"
+    x:DataType="vm:SettingsViewModel">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="8" Margin="16">
+            <TextBlock 
+                Text="Настройки"
+                FontSize="24"
+                FontWeight="Bold"
+                Margin="0,0,0,16"/>
+            
+            <Grid>
+                <ContentControl
+                    Content="{Binding CurrentViewModel}"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</reactive:ReactiveUserControl>

@@ -1,0 +1,132 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.StartView"
+    x:TypeArguments="vm:StartViewModel"
+    x:DataType="vm:StartViewModel">
+    
+    <Border Background="White" Padding="4">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="30">
+            <Grid Width="180" Height="180">
+                <Border x:Name="RotatingBorder" 
+                        Classes.ShowSpinner="{Binding ShowSpinner}"
+                        Classes.ShowGlowing="{Binding ShowGlowing}"
+                        Width="180"
+                        Height="180"
+                        CornerRadius="90"
+                        BorderThickness="4">
+                    <Border.Styles>
+                        <Style Selector="Border.ShowSpinner">
+                            <Style.Animations>
+                                <Animation Duration="0:0:2" 
+                                          IterationCount="INFINITE"
+                                          Delay="0"
+                                          Easing="LinearEasing">
+                                    <KeyFrame Cue="0%">
+                                        <Setter Property="RotateTransform.Angle" Value="0"/>
+                                    </KeyFrame>
+                                    <KeyFrame Cue="100%">
+                                        <Setter Property="RotateTransform.Angle" Value="360"/>
+                                    </KeyFrame>
+                                </Animation>
+                            </Style.Animations>
+                        </Style>
+                        <Style Selector="Border.ShowGlowing">
+                            <Setter Property="BorderBrush">
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0.1" Color="#9C27B0"/>
+                                    <GradientStop Offset="0.5" Color="#2196F3"/>
+                                    <GradientStop Offset="1" Color="#9C27B0"/>
+                                </LinearGradientBrush>
+                            </Setter>
+                            <Setter Property="BoxShadow" Value="inset 0 0 3 3 #5F5FD2, 0 0 3 3 #5F5FD2"/>
+                        </Style>
+                        <Style Selector="Border">
+                            <Setter Property="BorderBrush">
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0.1" Color="#2196F3"/>
+                                    <GradientStop Offset="0.5" Color="#2196F3"/>
+                                    <GradientStop Offset="1" Color="#2196F3"/>
+                                </LinearGradientBrush>
+                            </Setter>
+                        </Style>
+                    </Border.Styles>
+                </Border>
+                
+                <Button Command="{Binding ButtonCommand}"
+                    IsEnabled="{Binding IsButtonEnabled}"
+                    Width="180"
+                    Height="180"
+                    CornerRadius="90"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Padding="0"
+                    Cursor="Hand">
+                
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="Foreground" Value="#2196F3"/>
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Template">
+                                <ControlTemplate>
+                                    <Border Name="hitArea"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="{TemplateBinding CornerRadius}"
+                                            Background="Transparent"
+                                            Width="180"
+                                            Height="180">
+                                        
+                                        <ContentPresenter Name="contentPresenter"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter>
+                        </Style>
+                        
+                        <Style Selector="Button:pointerover /template/ Border">
+                            <Setter Property="Background">
+                                <SolidColorBrush Color="#10000000" Opacity="0.1"/>
+                            </Setter>
+                        </Style>
+                        
+                        <Style Selector="Button:pressed /template/ Border">
+                            <Setter Property="Background">
+                                <SolidColorBrush Color="#20000000" Opacity="0.2"/>
+                            </Setter>
+                        </Style>
+                        
+                        <Style Selector="Button:enabled">
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Style>
+                        
+                        <Style Selector="Button:disabled">
+                            <Setter Property="Cursor" Value="Arrow"/>
+                            <Setter Property="Foreground" Value="#9E9E9E"/>
+                            <Setter Property="Opacity" Value="0.7"/>
+                        </Style>
+                    </Button.Styles>
+                    
+                    <TextBlock Text="{Binding ButtonText}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+        </StackPanel>
+    </Border>
+</reactive:ReactiveUserControl>

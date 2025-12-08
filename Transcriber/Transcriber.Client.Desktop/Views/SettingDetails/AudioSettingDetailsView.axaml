@@ -1,0 +1,28 @@
+<reactive:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:reactive="http://reactiveui.net"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.SettingDetails"
+             mc:Ignorable="d"
+             x:Class="Transcriber.Client.Desktop.Views.SettingDetails.AudioSettingDetailsView"
+             x:TypeArguments="vm:AudioSettingDetailsViewModel"
+             x:DataType="vm:AudioSettingDetailsViewModel">
+    <StackPanel Spacing="16">
+        <!-- Кнопка назад -->
+        <Button 
+            Content="Назад"
+            Command="{Binding NavigateBackCommand}"
+            HorizontalAlignment="Left"
+            Padding="12,8"/>
+            
+        <!-- Контент детальной настройки -->
+        <TextBlock 
+            Text="Настройки источников аудио"
+            FontSize="18"
+            FontWeight="SemiBold"/>
+            
+        <!-- Здесь остальной контент детальной настройки -->
+        <TextBlock Text="Контент настроек аудио источников..." />
+    </StackPanel>
+</reactive:ReactiveUserControl>

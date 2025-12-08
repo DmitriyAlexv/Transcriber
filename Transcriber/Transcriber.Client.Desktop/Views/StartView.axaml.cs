@@ -3,9 +3,9 @@ using Transcriber.Client.Desktop.ViewModels;
 
 namespace Transcriber.Client.Desktop.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+public partial class StartView : ReactiveUserControl<StartViewModel>
 {
-    public MainWindow()
+    public StartView()
     {
         InitializeComponent();
     }

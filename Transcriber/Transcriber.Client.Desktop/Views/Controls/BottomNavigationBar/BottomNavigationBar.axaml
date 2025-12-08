@@ -1,0 +1,49 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:services="clr-namespace:Transcriber.Client.Desktop.Services"
+    xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:bottomNavigationBar="clr-namespace:Transcriber.Client.Desktop.Views.Controls.BottomNavigationBar"
+    xmlns:bottomNavigationBarVm="clr-namespace:Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.Controls.BottomNavigationBar.BottomNavigationBar"
+    x:DataType="bottomNavigationBarVm:BottomNavigationBarViewModel"
+    x:TypeArguments="bottomNavigationBarVm:BottomNavigationBarViewModel">
+    
+    <UserControl.Resources>
+        <services:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </UserControl.Resources>
+    
+    <UserControl.Styles>
+        <Style Selector="Button.NavigationButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        
+        <Style Selector="material|MaterialIcon.NavigationIcon">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="32"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <Border Background="Transparent" 
+            BorderThickness="0">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    Spacing="10">
+            <bottomNavigationBar:BottomNavigationButton 
+                DataContext="{Binding HomeButtonViewModel}"/>
+            
+            <bottomNavigationBar:BottomNavigationButton 
+                DataContext="{Binding SettingsButtonViewModel}"/>
+        </StackPanel>
+    </Border>
+</reactive:ReactiveUserControl>

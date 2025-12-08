@@ -1,130 +1,52 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Transcriber.Client.Desktop.ViewModels"
-        Title="Audio Capture App" Width="600" Height="500"
-        x:Class="Transcriber.Client.Desktop.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel">
+<reactive:ReactiveWindow 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels"
+    xmlns:bottomNavigationBar="clr-namespace:Transcriber.Client.Desktop.Views.Controls.BottomNavigationBar"
+    Icon="/Assets/logo.ico"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.MainWindow"
+    x:TypeArguments="vm:MainWindowViewModel"
+    x:DataType="vm:MainWindowViewModel"
+    Title="Transcriber"
+    Width="320" 
+    Height="568"
+    MinWidth="320" 
+    MinHeight="568"
+    MaxWidth="320" 
+    MaxHeight="568">
     
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-
-    <DockPanel>
-        <!-- Header -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" 
-                   HorizontalAlignment="Center" Margin="10">
-            <Button Content="Главная" Command="{Binding ShowMainCommand}"
-                   Margin="5" Padding="10,5"/>
-            <Button Content="Настройки аудио" Command="{Binding ShowSettingsCommand}"
-                   Margin="5" Padding="10,5"/>
-            <Button Content="Настройки текста" Command="{Binding ShowTextSettingsCommand}"
-                   Margin="5" Padding="10,5"/>
-        </StackPanel>
-
-        <!-- Main Content -->
-        <ScrollViewer>
-            <StackPanel Margin="20">
-                
-                <!-- Main Tab -->
-                <StackPanel IsVisible="{Binding IsMainTabVisible}">
-                    <TextBlock Text="Захват аудио потока" FontSize="16" FontWeight="Bold"
-                              HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                    
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,0,0,20">
-                        <ToggleButton Content="{Binding CaptureButtonText}" 
-                                     IsChecked="{Binding IsCapturing}"
-                                     Command="{Binding ToggleCaptureCommand}"
-                                     Width="150" Height="30" Margin="10"/>
-                    </StackPanel>
-
-                    <!-- Text Display -->
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5"
-                           Background="#F0F0F0" Padding="10" Margin="0,10">
-                        <ScrollViewer MaxHeight="200">
-                            <ItemsControl ItemsSource="{Binding TextLines}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" Margin="0,2" 
-                                                  TextWrapping="Wrap"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Border>
-                </StackPanel>
-
-                <!-- Audio Settings Tab -->
-                <StackPanel IsVisible="{Binding IsSettingsTabVisible}">
-                    <TextBlock Text="Настройки захвата аудио" FontSize="16" FontWeight="Bold"
-                              Margin="0,0,0,20"/>
-                    
-                    <StackPanel Margin="0,10">
-                        <TextBlock Text="Режим захвата:" FontWeight="Bold"/>
-                        <ComboBox SelectedIndex="0" Margin="0,5,0,10">
-                            <ComboBoxItem Content="Все аудио потоки"/>
-                            <ComboBoxItem Content="Только браузер"/>
-                        </ComboBox>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,10">
-                        <TextBlock Text="Белый список:" FontWeight="Bold"/>
-                        <TextBox Margin="0,5" Height="80" AcceptsReturn="True"
-                                TextWrapping="Wrap" 
-                                Watermark="Введите источники аудио (каждый с новой строки)"/>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,10">
-                        <TextBlock Text="Чёрный список:" FontWeight="Bold"/>
-                        <TextBox Margin="0,5" Height="80" AcceptsReturn="True"
-                                TextWrapping="Wrap"
-                                Watermark="Введите источники для исключения (каждый с новой строки)"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <!-- Text Settings Tab -->
-                <StackPanel IsVisible="{Binding IsTextSettingsTabVisible}">
-                    <TextBlock Text="Настройки отображения текста" FontSize="16" FontWeight="Bold"
-                              Margin="0,0,0,20"/>
-                    
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" 
-                         Margin="0,10">
-                        <TextBlock Text="Позиция X:" Grid.Row="0" Grid.Column="0" 
-                                  VerticalAlignment="Center" Margin="0,5"/>
-                        <TextBox Text="{Binding TextSettings.WindowLeft}" Grid.Row="0" Grid.Column="1"
-                                Margin="5" Width="100" HorizontalAlignment="Left"/>
-                        
-                        <TextBlock Text="Позиция Y:" Grid.Row="1" Grid.Column="0"
-                                  VerticalAlignment="Center" Margin="0,5"/>
-                        <TextBox Text="{Binding TextSettings.WindowTop}" Grid.Row="1" Grid.Column="1"
-                                Margin="5" Width="100" HorizontalAlignment="Left"/>
-                        
-                        <TextBlock Text="Прозрачность окна:" Grid.Row="2" Grid.Column="0"
-                                  VerticalAlignment="Center" Margin="0,5"/>
-                        <Slider Value="{Binding TextSettings.WindowOpacity}" Grid.Row="2" Grid.Column="1"
-                               Minimum="0.1" Maximum="1.0" Margin="5"/>
-                        
-                        <TextBlock Text="Прозрачность текста:" Grid.Row="3" Grid.Column="0"
-                                  VerticalAlignment="Center" Margin="0,5"/>
-                        <Slider Value="{Binding TextSettings.TextOpacity}" Grid.Row="3" Grid.Column="1"
-                               Minimum="0.1" Maximum="1.0" Margin="5"/>
-                        
-                        <TextBlock Text="Размер текста:" Grid.Row="4" Grid.Column="0"
-                                  VerticalAlignment="Center" Margin="0,5"/>
-                        <TextBox Text="{Binding TextSettings.FontSize}" Grid.Row="4" Grid.Column="1"
-                                Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    </Grid>
-                </StackPanel>
-
-            </StackPanel>
-        </ScrollViewer>
-
-        <!-- Footer Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" 
-                   HorizontalAlignment="Right" Margin="10">
-            <Button Content="Свернуть" Command="{Binding MinimizeCommand}"
-                   Margin="5" Padding="15,5"/>
-            <Button Content="Выход" Command="{Binding ExitCommand}"
-                   Margin="5" Padding="15,5" Background="#FF4444"/>
-        </StackPanel>
-    </DockPanel>
-</Window>
+    
+    <Grid RowDefinitions="*,60">
+        <reactive:ViewModelViewHost 
+            Grid.Row="0"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            ViewModel="{Binding CurrentViewModel}">
+            <reactive:ViewModelViewHost.Styles>
+                <Style Selector="ContentControl">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.2">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="0"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="1"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </reactive:ViewModelViewHost.Styles>
+        </reactive:ViewModelViewHost>
+        <bottomNavigationBar:BottomNavigationBar 
+            Grid.Row="1" 
+            DataContext="{Binding BottomNavigationBarViewModel}"/>
+    </Grid>
+</reactive:ReactiveWindow>

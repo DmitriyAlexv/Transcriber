@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="Transcriber.Client.Desktop.App"
              xmlns:local="using:Transcriber.Client.Desktop"
              RequestedThemeVariant="Default">
@@ -8,8 +9,11 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
+    
   
     <Application.Styles>
         <FluentTheme />
+        
+        <material:MaterialIconStyles />
     </Application.Styles>
 </Application>
