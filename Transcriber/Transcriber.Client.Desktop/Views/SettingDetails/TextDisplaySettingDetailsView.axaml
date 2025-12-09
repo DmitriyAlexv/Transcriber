@@ -8,21 +8,78 @@
              x:Class="Transcriber.Client.Desktop.Views.SettingDetails.TextDisplaySettingDetailsView"
              x:TypeArguments="vm:TextDisplaySettingDetailsViewModel"
              x:DataType="vm:TextDisplaySettingDetailsViewModel">
-    <StackPanel Spacing="16">
-        <!-- Кнопка назад -->
-        <Button 
-            Content="Назад"
-            Command="{Binding NavigateBackCommand}"
-            HorizontalAlignment="Left"
-            Padding="12,8"/>
-            
-        <!-- Контент детальной настройки -->
-        <TextBlock 
-            Text="Настройки источников аудио"
-            FontSize="18"
-            FontWeight="SemiBold"/>
-            
-        <!-- Здесь остальной контент детальной настройки -->
-        <TextBlock Text="Контент настроек аудио источников..." />
-    </StackPanel>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="10" ColumnSpacing="10">
+                <TextBlock Text="Left:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                <Slider Minimum="0" Maximum="2000" 
+                        Value="{Binding Settings.WindowLeft}"
+                        Grid.Row="0" Grid.Column="1"/>
+                <TextBlock Text="{Binding Settings.WindowLeft}" 
+                           VerticalAlignment="Center"
+                           Grid.Row="0" Grid.Column="2"
+                           Width="50"/>
+                    
+                <TextBlock Text="Top:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                <Slider Minimum="0" Maximum="2000" 
+                        Value="{Binding Settings.WindowTop}"
+                        Grid.Row="1" Grid.Column="1"/>
+                <TextBlock Text="{Binding Settings.WindowTop}" 
+                           VerticalAlignment="Center"
+                           Grid.Row="1" Grid.Column="2"
+                           Width="50"/>
+            </Grid>
+                
+            <StackPanel Margin="0,10,0,0" Spacing="5">
+                <TextBlock Text="Current Position:" FontWeight="Bold"/>
+                <TextBlock>
+                    <Run Text="X:"/>
+                    <Run Text="{Binding Settings.Position.X}"/>
+                    <Run Text=", Y:"/>
+                    <Run Text="{Binding Settings.Position.Y}"/>
+                </TextBlock>
+            </StackPanel>
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="10" ColumnSpacing="10">
+                <TextBlock Text="Width:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                <Slider Minimum="200" Maximum="1000" 
+                        Value="{Binding Settings.WindowWidth}"
+                        Grid.Row="0" Grid.Column="1"/>
+                    
+                <TextBlock Text="Height:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                <Slider Minimum="100" Maximum="800" 
+                        Value="{Binding Settings.WindowHeight}"
+                        Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="10" ColumnSpacing="10">
+                <TextBlock Text="Window:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                <Slider Minimum="0.1" Maximum="1" 
+                        Value="{Binding Settings.WindowOpacity}"
+                        Grid.Row="0" Grid.Column="1"/>
+                    
+                <TextBlock Text="Text:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                <Slider Minimum="0.1" Maximum="1" 
+                        Value="{Binding Settings.TextOpacity}"
+                        Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*" RowSpacing="10" ColumnSpacing="10">
+                <TextBlock Text="Size:" VerticalAlignment="Center" Grid.Column="0"/>
+                <Slider Minimum="8" Maximum="72" 
+                        Value="{Binding Settings.FontSize}"
+                        Grid.Column="1"/>
+            </Grid>
+            <StackPanel Spacing="10">
+                <TextBox Text="{Binding PreviewText}" 
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         Height="80"/>
+                <Button Content="Generate Random Text" 
+                        Command="{Binding GenerateRandomPreviewTextCommand}"/>
+            </StackPanel>
+            <Button Content="Back" 
+                    Command="{Binding NavigateBackCommand}"
+                    HorizontalAlignment="Left"
+                    Width="100"/>
+        </StackPanel>
+    </ScrollViewer>
 </reactive:ReactiveUserControl>
