@@ -16,7 +16,7 @@ public partial class TextDisplayPreviewWindow: ReactiveWindow<TextDisplayPreview
         {
             this.WhenAnyValue(x => x.ViewModel)
                 .Where(vm => vm != null)
-                .Select(vm => vm.WhenAnyValue(v => v.Position))
+                .Select(vm => vm.WhenAnyValue(v => v.Settings.Position))
                 .Switch()
                 .BindTo(this, x => x.Position)
                 .DisposeWith(disposables);

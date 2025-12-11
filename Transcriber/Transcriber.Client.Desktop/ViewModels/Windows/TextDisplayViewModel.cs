@@ -20,11 +20,9 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
         set
         {
             this.RaiseAndSetIfChanged(ref _position, value);
-            this.RaisePropertyChanged(nameof(PositionString));
         }
     }
 
-    public string PositionString => $"{_position.X} {_position.Y}";
 
     public double Width
     {

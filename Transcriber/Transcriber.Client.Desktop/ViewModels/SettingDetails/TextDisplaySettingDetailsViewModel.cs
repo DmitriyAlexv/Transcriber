@@ -13,12 +13,12 @@ namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
 
 public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableViewModel
 {
-    private readonly SettingsNavigationViewModel _settingsNavigationViewModel;
+    private readonly TextDisplayPreviewViewModel _textDisplayPreviewViewModel;
+    
     private TextDisplaySettings _settings;
+    private TextDisplayPreviewWindow? _textDisplayPreviewWindow;
     private string _previewText = "Пример текста для preview. Этот текст будет меняться в реальном времени.";
-    private TextDisplayPreviewWindow _previewWindow;
-    private TextDisplayPreviewViewModel _viewModel;
-
+    
     public ViewModelActivator Activator { get; } = new();
 
     public TextDisplaySettings Settings
@@ -38,29 +38,23 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
 
     public TextDisplaySettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)
     {
-        _settingsNavigationViewModel = settingsNavigationViewModel;
-
-        // Загружаем настройки
+        _settings = null!;
         Settings = LoadSettings();
 
-        // Создаем ViewModel для preview окна
-        _viewModel = new TextDisplayPreviewViewModel(Settings);
+        _textDisplayPreviewViewModel = new TextDisplayPreviewViewModel(Settings);
 
         NavigateBackCommand = ReactiveCommand.Create(() => 
         {
             SaveSettings();
-            _settingsNavigationViewModel.NavigateBack();
+            settingsNavigationViewModel.NavigateBack();
         });
 
         GenerateRandomPreviewTextCommand = ReactiveCommand.Create(GenerateRandomPreviewText);
 
-        // Управляем preview окном через активацию/деактивацию ViewModel
         this.WhenActivated(disposables =>
         {
-            // Открываем preview окно при активации
             ShowPreviewWindow();
 
-            // Обновляем preview при изменении настроек
             var settingsSubscription = this.WhenAnyValue(
                 x => x.Settings.WindowLeft,
                 x => x.Settings.WindowTop,
@@ -73,11 +67,9 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => UpdatePreviewSettings());
 
-            // Обновляем текст в preview
             var textSubscription = this.WhenAnyValue(x => x.PreviewText)
                 .Subscribe(text => UpdatePreviewText(text));
 
-            // Закрываем preview при деактивации
             Disposable.Create(() => ClosePreviewWindow())
                 .DisposeWith(disposables);
 
@@ -88,13 +80,11 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
 
     private TextDisplaySettings LoadSettings()
     {
-        // В реальном приложении загружаем из настроек
         return new TextDisplaySettings();
     }
 
     private void SaveSettings()
     {
-        // В реальном приложении сохраняем настройки
     }
 
     private void GenerateRandomPreviewText()
@@ -114,45 +104,45 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
 
     private void ShowPreviewWindow()
     {
-        if (_previewWindow == null || !_previewWindow.IsVisible)
+        if (_textDisplayPreviewWindow is { IsVisible: true }) 
+            return;
+        
+        _textDisplayPreviewWindow = new TextDisplayPreviewWindow
         {
-            _previewWindow = new TextDisplayPreviewWindow
-            {
-                DataContext = _viewModel,
-                CanResize = false,
-                ShowInTaskbar = false,
-                Topmost = true,
-                ExtendClientAreaToDecorationsHint = true,
-                TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur]
-            };
+            DataContext = _textDisplayPreviewViewModel,
+            CanResize = false,
+            ShowInTaskbar = false,
+            Topmost = true,
+            ExtendClientAreaToDecorationsHint = true,
+            TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur]
+        };
 
-            _previewWindow.Closed += (s, e) => _previewWindow = null;
-            _previewWindow.Show();
-        }
+        _textDisplayPreviewWindow.Closed += (_, _) => _textDisplayPreviewWindow = null;
+        _textDisplayPreviewWindow.Show();
     }
 
     private void UpdatePreviewSettings()
     {
-        if (_viewModel != null)
+        if (_textDisplayPreviewViewModel != null)
         {
-            _viewModel.UpdateSettings(Settings);
+            _textDisplayPreviewViewModel.Settings = Settings;
         }
     }
 
     private void UpdatePreviewText(string text)
     {
-        if (_viewModel != null)
+        if (_textDisplayPreviewViewModel != null)
         {
-            _viewModel.DisplayText = text;
+            _textDisplayPreviewViewModel.DisplayText = text;
         }
     }
 
     private void ClosePreviewWindow()
     {
-        if (_previewWindow != null)
-        {
-            _previewWindow.Close();
-            _previewWindow = null;
-        }
+        if (_textDisplayPreviewWindow == null) 
+            return;
+        
+        _textDisplayPreviewWindow.Close();
+        _textDisplayPreviewWindow = null;
     }
 }
