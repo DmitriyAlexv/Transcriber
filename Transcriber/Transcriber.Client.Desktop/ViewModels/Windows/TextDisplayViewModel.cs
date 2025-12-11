@@ -8,19 +8,23 @@ namespace Transcriber.Client.Desktop.ViewModels.Windows;
 
 public class TextDisplayViewModel: ViewModelBase, IDisposable
 {
+    private IDisposable _currentHideTimer;
     private TextDisplaySettings _settings;
     private string _displayText = string.Empty;
     private PixelPoint _position;
     private bool _isVisible;
-    private double _windowOpacity;
-    private readonly IDisposable _hideTimerSubscription;
-    private bool _isWindowActive = true;
     
     public PixelPoint Position
     {
         get => _position;
-        set => this.RaiseAndSetIfChanged(ref _position, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _position, value);
+            this.RaisePropertyChanged(nameof(PositionString));
+        }
     }
+
+    public string PositionString => $"{_position.X} {_position.Y}";
 
     public double Width
     {
@@ -50,8 +54,15 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
 
     public double WindowOpacity
     {
-        get => _windowOpacity;
-        private set => this.RaiseAndSetIfChanged(ref _windowOpacity, value);
+        get => _settings?.WindowOpacity ?? 0.8;
+        set
+        {
+            if (_settings != null)
+            {
+                _settings.WindowOpacity = value;
+                this.RaisePropertyChanged(nameof(WindowOpacity));
+            }
+        }
     }
 
     public double TextOpacity
@@ -80,46 +91,59 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
         }
     }
 
+    public string DisplayText
+    {
+        get => _displayText;
+        set => this.RaiseAndSetIfChanged(ref _displayText, value);
+    }
+
     public bool IsVisible
     {
         get => _isVisible;
         private set => this.RaiseAndSetIfChanged(ref _isVisible, value);
     }
 
-    public string DisplayText
-    {
-        get => _displayText;
-        private set => this.RaiseAndSetIfChanged(ref _displayText, value);
-    }
 
     public TextDisplayViewModel(TextDisplaySettings settings)
     {
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-        
-        // Начальные значения
-        WindowOpacity = _settings.WindowOpacity;
         UpdatePosition();
         
         // Таймер для скрытия окна
-        _hideTimerSubscription = Observable
-            .Interval(TimeSpan.FromSeconds(2))
-            .Where(_ => _isWindowActive && !string.IsNullOrEmpty(DisplayText))
+        _currentHideTimer = Observable
+            .Timer(TimeSpan.FromSeconds(2))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(_ =>
             {
-                HideWindow();
+                if (IsVisible && !string.IsNullOrEmpty(DisplayText))
+                {
+                    HideWindow();
+                }
             });
     }
 
     public void ShowText(string text)
     {
-        if (!_isWindowActive) return;
+        Console.WriteLine($"showText: {text}");
+        
+        // Отменяем предыдущий таймер
+        _currentHideTimer?.Dispose();
         
         DisplayText = text;
         ShowWindow();
         
-        // Сброс таймера при новом тексте
-        ResetHideTimer();
+        // Запускаем новый таймер скрытия
+        _currentHideTimer = Observable
+            .Timer(TimeSpan.FromSeconds(2))
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ =>
+            {
+                if (IsVisible && !string.IsNullOrEmpty(DisplayText))
+                {
+                    HideWindow();
+                }
+            });
+
     }
 
     public void ClearText()
@@ -130,20 +154,11 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
     private void ShowWindow()
     {
         IsVisible = true;
-        WindowOpacity = _settings.WindowOpacity;
     }
 
     private void HideWindow()
     {
-        WindowOpacity = 0;
-        
-        // Через небольшое время после исчезновения анимации скрываем окно
-        Observable.Timer(TimeSpan.FromMilliseconds(300))
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ =>
-            {
-                IsVisible = false;
-            });
+        IsVisible = false;
     }
 
     private void ResetHideTimer()
@@ -155,7 +170,6 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
     public void UpdateSettings(TextDisplaySettings settings)
     {
         _settings = settings;
-        WindowOpacity = _settings.WindowOpacity;
         UpdatePosition();
         
         this.RaisePropertyChanged(nameof(Width));
@@ -164,18 +178,13 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
         this.RaisePropertyChanged(nameof(FontSize));
     }
 
-    public void SetWindowActive(bool isActive)
-    {
-        _isWindowActive = isActive;
-    }
-
     private void UpdatePosition()
     {
-        Position = _settings.Position;
+        Position = _settings?.Position ?? new PixelPoint(100, 100);
     }
 
     public void Dispose()
     {
-        _hideTimerSubscription?.Dispose();
+        _currentHideTimer?.Dispose();
     }
 }
