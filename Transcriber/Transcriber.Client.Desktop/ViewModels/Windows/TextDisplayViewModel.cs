@@ -12,7 +12,7 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
     private string _displayText = string.Empty;
     private bool _isVisible;
     
-    public TextDisplaySettings Settings => Singleton.AppSettingsManager.TextDisplaySettings!;
+    public TextDisplaySettings Settings => Singleton.AppSettingsManager.TextDisplaySettings;
 
     public string DisplayText
     {
@@ -29,6 +29,13 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
 
     public TextDisplayViewModel()
     {
+        Observable.FromEventPattern<EventHandler<string>, string>(
+                h => Singleton.TextProducer.TextConverted += h,
+                h => Singleton.TextProducer.TextConverted -= h)
+            .Select(e => e.EventArgs)
+            .ObserveOn(RxApp.MainThreadScheduler) 
+            .Subscribe(ShowText);
+        
         _currentHideTimer = Observable
             .Timer(TimeSpan.FromSeconds(2))
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -43,9 +50,7 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
 
     public void ShowText(string text)
     {
-        Console.WriteLine($"showText: {text}");
-
-        _currentHideTimer?.Dispose();
+        _currentHideTimer.Dispose();
         
         DisplayText = text;
         ShowWindow();

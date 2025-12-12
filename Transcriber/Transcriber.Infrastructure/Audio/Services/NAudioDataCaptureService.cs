@@ -11,9 +11,20 @@ public class NAudioDataCaptureService : IDataCaptureService
     private readonly AudioSettings _audioSettings;
     private readonly WasapiLoopbackCapture _capture;
 
-    public DataCaptureState State { get; private set; } = DataCaptureState.Stopped;
+    private DataCaptureState _state = DataCaptureState.Stopped;
+    public DataCaptureState State
+    {
+        get => _state;
+        private set
+        {
+            _state = value;
+            OnStatusChanged?.Invoke(this, new CaptureStatusChangedEventArgs());
+        }
+        
+    }
     
     public event EventHandler<DataCapturedEventArgs>? OnDataCaptured;
+    public event EventHandler<CaptureStatusChangedEventArgs>? OnStatusChanged;
 
     public NAudioDataCaptureService(AudioSettings audioSettings)
     {

@@ -1,6 +1,8 @@
+using System;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 using ReactiveUI;
+using Transcriber.Client.Desktop.Services;
 using Transcriber.Core.Models;
 
 namespace Transcriber.Client.Desktop.ViewModels;
@@ -49,6 +51,21 @@ public class StartViewModel : ViewModelBase
             ExecuteButtonCommand,
             this.WhenAnyValue(x => x.IsButtonEnabled)
         );
+        
+        Observable.FromEventPattern<EventHandler<CaptureStatusChangedEventArgs>, CaptureStatusChangedEventArgs>(
+                h => Singleton.AudioCaptureService.OnStatusChanged += h,
+                h => Singleton.AudioCaptureService.OnStatusChanged -= h)
+            .Select(_ => Singleton.AudioCaptureService.State)
+            .ObserveOn(RxApp.MainThreadScheduler) 
+            .Subscribe(state =>
+            {
+                CurrentState = state switch
+                {
+                    DataCaptureState.Started => DataCaptureState.Started,
+                    DataCaptureState.Stopped => DataCaptureState.Stopped,
+                    _ => CurrentState
+                };
+            });
     }
     
     private void ExecuteButtonCommand()
@@ -64,23 +81,17 @@ public class StartViewModel : ViewModelBase
         }
     }
     
-    private async void TransitionToStarting()
+    private void TransitionToStarting()
     {
         CurrentState = DataCaptureState.Starting;
         
-        // Имитация асинхронной операции
-        await Task.Delay(2000);
-        
-        CurrentState = DataCaptureState.Started;
+        Singleton.AudioCaptureService.StartCapture();
     }
     
-    private async void TransitionToStopping()
+    private void TransitionToStopping()
     {
         CurrentState = DataCaptureState.Stopping;
         
-        // Имитация асинхронной операции
-        await Task.Delay(2000);
-        
-        CurrentState = DataCaptureState.Stopped;
+        Singleton.AudioCaptureService.StopCapture();
     }
 }

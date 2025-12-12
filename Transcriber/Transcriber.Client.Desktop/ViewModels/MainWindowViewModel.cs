@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar;
@@ -39,24 +37,13 @@ public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
         
         Singleton.AppSettingsManager
             .WhenAnyValue(x => x.TextDisplaySettings)
-            .Subscribe(x =>
+            .Subscribe(_ =>
             {
                 textDisplayViewModel.RaisePropertyChanged(nameof(textDisplayViewModel.Settings));
             });
         
         this.WhenActivated(disposables =>
         {
-            Observable
-                .Interval(TimeSpan.FromSeconds(1))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ =>
-                {
-                    if(BottomNavigationBarViewModel.StartViewModel.IsButtonEnabled)
-                        textDisplayViewModel.ShowText($"Hello World! {Guid.NewGuid()}");
-                })
-                .DisposeWith(disposables);
-
-
             Disposable.Create( () =>
                 {
                     Singleton.AppSettingsManager.SaveAll();

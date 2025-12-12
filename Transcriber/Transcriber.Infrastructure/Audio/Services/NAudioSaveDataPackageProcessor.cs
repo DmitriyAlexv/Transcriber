@@ -12,12 +12,12 @@ public class NAudioSaveDataPackageProcessor(AudioSettings audioSettings) : IData
 
     public async Task ProcessDataPackageAsync(DataPackage dataPackage)
     {
-        if (_dataPackages.Count < 20)
+        if (_dataPackages.Count < 19)
         {
             _dataPackages.Add(dataPackage);
             return;
         }
-        
+        _dataPackages.Add(dataPackage);
         var bytes = _dataPackages.SelectMany(d => d.IsFilled ? d.Bytes : d.Bytes.Take(d.BytesWritten))
             .ToArray();
         _dataPackages.Clear();
