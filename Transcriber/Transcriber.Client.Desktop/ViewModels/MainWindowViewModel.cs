@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using ReactiveUI;
-using Transcriber.Client.Desktop.Models;
+using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar;
 using Transcriber.Client.Desktop.ViewModels.Windows;
 using Transcriber.Client.Desktop.Views.Windows;
@@ -13,10 +13,8 @@ namespace Transcriber.Client.Desktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
 {
-    private TextDisplaySettings _textDisplaySettings;
-
     public ViewModelActivator Activator { get; } = new();
-    public BottomNavigationBarViewModel BottomNavigationBarViewModel { get; } = new ();
+    public BottomNavigationBarViewModel BottomNavigationBarViewModel { get; } = new();
     public ViewModelBase CurrentViewModel => BottomNavigationBarViewModel.CurrentViewModel;
 
     public MainWindowViewModel()
@@ -28,7 +26,7 @@ public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
                 this.RaisePropertyChanged(nameof(CurrentViewModel));
             });
         
-        var textDisplayViewModel = new TextDisplayViewModel(LoadDisplaySettings());
+        var textDisplayViewModel = new TextDisplayViewModel();
         var textDisplayWindow = new TextDisplayWindow
         {
             DataContext = textDisplayViewModel,
@@ -39,40 +37,33 @@ public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
             TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur]
         };
         
+        Singleton.AppSettingsManager
+            .WhenAnyValue(x => x.TextDisplaySettings)
+            .Subscribe(x =>
+            {
+                textDisplayViewModel.RaisePropertyChanged(nameof(textDisplayViewModel.Settings));
+            });
+        
         this.WhenActivated(disposables =>
         {
-            textDisplayWindow.Show();
-
             Observable
-                .Interval(TimeSpan.FromSeconds(3))
+                .Interval(TimeSpan.FromSeconds(1))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ =>
                 {
-                    textDisplayViewModel.ShowText($"Hello World! {Guid.NewGuid()}");
+                    if(BottomNavigationBarViewModel.StartViewModel.IsButtonEnabled)
+                        textDisplayViewModel.ShowText($"Hello World! {Guid.NewGuid()}");
                 })
                 .DisposeWith(disposables);
 
 
-            Disposable.Create(() =>
+            Disposable.Create( () =>
                 {
+                    Singleton.AppSettingsManager.SaveAll();
                     textDisplayWindow.Close();
                     textDisplayViewModel.Dispose();
                 })
                 .DisposeWith(disposables);
         });
-    }
-    
-    private TextDisplaySettings LoadDisplaySettings()
-    {
-        return new TextDisplaySettings
-        {
-            WindowWidth = 400,
-            WindowHeight = 200,
-            WindowOpacity = 0.8,
-            TextOpacity = 1.0,
-            FontSize = 14,
-            WindowLeft = 400,
-            WindowTop = 400
-        };
     }
 }

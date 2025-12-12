@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using Avalonia.Controls;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
+using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
 using Transcriber.Client.Desktop.ViewModels.Windows;
 using Transcriber.Client.Desktop.Views.Windows;
@@ -38,14 +39,13 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
 
     public TextDisplaySettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)
     {
-        _settings = null!;
-        Settings = LoadSettings();
+        Settings = Copy(Singleton.AppSettingsManager.TextDisplaySettings);
 
         _textDisplayPreviewViewModel = new TextDisplayPreviewViewModel(Settings);
 
         NavigateBackCommand = ReactiveCommand.Create(() => 
         {
-            SaveSettings();
+            Singleton.AppSettingsManager.TextDisplaySettings = Copy(Settings);
             settingsNavigationViewModel.NavigateBack();
         });
 
@@ -68,23 +68,14 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
                 .Subscribe(_ => UpdatePreviewSettings());
 
             var textSubscription = this.WhenAnyValue(x => x.PreviewText)
-                .Subscribe(text => UpdatePreviewText(text));
+                .Subscribe(UpdatePreviewText);
 
-            Disposable.Create(() => ClosePreviewWindow())
+            Disposable.Create(ClosePreviewWindow)
                 .DisposeWith(disposables);
 
             settingsSubscription.DisposeWith(disposables);
             textSubscription.DisposeWith(disposables);
         });
-    }
-
-    private TextDisplaySettings LoadSettings()
-    {
-        return new TextDisplaySettings();
-    }
-
-    private void SaveSettings()
-    {
     }
 
     private void GenerateRandomPreviewText()
@@ -142,7 +133,22 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
         if (_textDisplayPreviewWindow == null) 
             return;
         
+        Singleton.AppSettingsManager.TextDisplaySettings = Copy(Settings);
         _textDisplayPreviewWindow.Close();
         _textDisplayPreviewWindow = null;
+    }
+
+    private TextDisplaySettings Copy(TextDisplaySettings textDisplaySettings)
+    {
+        return new TextDisplaySettings
+        {
+            WindowLeft = textDisplaySettings.WindowLeft,
+            WindowTop = textDisplaySettings.WindowTop,
+            WindowWidth = textDisplaySettings.WindowWidth,
+            WindowHeight = textDisplaySettings.WindowHeight,
+            WindowOpacity = textDisplaySettings.WindowOpacity,
+            TextOpacity = textDisplaySettings.TextOpacity,
+            FontSize = textDisplaySettings.FontSize
+        };
     }
 }

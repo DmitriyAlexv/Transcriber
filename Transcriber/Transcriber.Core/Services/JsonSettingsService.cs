@@ -13,25 +13,27 @@ public class JsonSettingsService : ISettingsService
     
     public void RegisterSettings<T>(string name) where T : class
     {
-        _fileMappings.Add(typeof(T), name);
+        _fileMappings.TryAdd(typeof(T), name);
     }
 
-    public async Task<T> GetSettingsAsync<T>() where T : class, new()
+    public T GetSettings<T>() where T : class, new()
     {
         var filePath = GetFilePath<T>();
         return File.Exists(filePath) 
-            ? JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(filePath)) ?? new T()
+            ? JsonSerializer.Deserialize<T>(File.ReadAllText(filePath)) ?? new T()
             : new T();
     }
 
-    public async Task SaveSettingsAsync<T>(T settings) where T : class?
+    public void SaveSettings<T>(T settings) where T : class?
     {
         if(settings == null)
             return;
         
+        CreateDirectory();
+        
         var filePath = GetFilePath<T>();
         var json = JsonSerializer.Serialize(settings, _jsonSerializerOptions);
-        await File.WriteAllTextAsync(filePath, json);
+        File.WriteAllTextAsync(filePath, json);
     }
     
     private string GetFilePath<T>()
@@ -42,9 +44,17 @@ public class JsonSettingsService : ISettingsService
         
         return Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "YourApp",
-            "Settings",
+            "Transcriber",
             filename
         );
+    }
+
+    private void CreateDirectory()
+    {
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Transcriber");
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
     }
 }

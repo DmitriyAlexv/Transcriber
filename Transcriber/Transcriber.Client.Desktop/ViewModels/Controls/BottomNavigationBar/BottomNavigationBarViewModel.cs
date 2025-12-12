@@ -7,8 +7,8 @@ namespace Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar;
 
 public class BottomNavigationBarViewModel: ViewModelBase
 {
-    private readonly StartViewModel _startViewModel = new();
-    private readonly SettingsViewModel _settingsViewModel = new();
+    public StartViewModel StartViewModel { get; } = new();
+    public SettingsViewModel SettingsViewModel { get; } = new();
     
     private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
     private ViewModelType _currentViewModelType = ViewModelType.Home;
@@ -47,8 +47,8 @@ public class BottomNavigationBarViewModel: ViewModelBase
             .WhenAnyValue(x => x.CurrentViewModelType)
             .Select(viewModelType => viewModelType switch
             {
-                ViewModelType.Home => (ViewModelBase)_startViewModel,
-                ViewModelType.Settings => _settingsViewModel,
+                ViewModelType.Home => (ViewModelBase)StartViewModel,
+                ViewModelType.Settings => SettingsViewModel,
                 _ => throw new ArgumentOutOfRangeException()
             })
             .ToProperty(this, x => x.CurrentViewModel);
