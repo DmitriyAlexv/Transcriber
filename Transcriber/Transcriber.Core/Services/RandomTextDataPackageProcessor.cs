@@ -4,7 +4,7 @@ using Transcriber.Core.Models;
 namespace Transcriber.Core.Services;
 
 // For test only
-public class RandomTextDataObjectProcessor: IDataPackageProcessor, ITranscribedTextProducer
+public class RandomTextDataPackageProcessor: IDataPackageProcessor, ITranscribedTextProducer
 {
     private readonly Random _random = new();
 

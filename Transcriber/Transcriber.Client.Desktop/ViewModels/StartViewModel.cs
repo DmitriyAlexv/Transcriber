@@ -85,6 +85,7 @@ public class StartViewModel : ViewModelBase
     {
         CurrentState = DataCaptureState.Starting;
         
+        Singleton.TranscribedTextCaptureService.StartCapture();
         Singleton.AudioCaptureService.StartCapture();
     }
     
@@ -92,6 +93,7 @@ public class StartViewModel : ViewModelBase
     {
         CurrentState = DataCaptureState.Stopping;
         
+        Singleton.TranscribedTextCaptureService.StopCapture();
         Singleton.AudioCaptureService.StopCapture();
     }
 }

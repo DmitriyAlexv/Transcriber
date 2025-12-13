@@ -19,8 +19,16 @@ public class AudioSendDataPackageProcessor : IDataPackageProcessor, IDisposable
         
         if (_stream == null || _client is not { Connected: true })
             await ReconnectAsync();
-        
-        await _stream!.WriteAsync(dataPackage.Bytes.AsMemory(0, dataPackage.BytesWritten));
+
+        try
+        {
+            await _stream!.WriteAsync(dataPackage.Bytes.AsMemory(0, dataPackage.BytesWritten));
+        }
+        catch (IOException e) when (e.InnerException is SocketException { SocketErrorCode: SocketError.ConnectionAborted })
+        {
+            await ReconnectAsync();
+            await _stream!.WriteAsync(dataPackage.Bytes.AsMemory(0, dataPackage.BytesWritten));
+        }
     }
     
     private async Task ReconnectAsync()

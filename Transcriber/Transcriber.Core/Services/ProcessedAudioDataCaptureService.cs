@@ -42,6 +42,7 @@ public class ProcessedAudioDataCaptureService: IDataCaptureService
         if(State is not DataCaptureState.Started)
             return;
         
+        DisposeConnection();
         State = DataCaptureState.Stopping;
     }
     
@@ -92,7 +93,6 @@ public class ProcessedAudioDataCaptureService: IDataCaptureService
         }
         finally
         {
-            DisposeConnection();
             State = DataCaptureState.Stopped;
         }
     }
