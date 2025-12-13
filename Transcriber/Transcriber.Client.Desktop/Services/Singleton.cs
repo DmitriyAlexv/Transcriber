@@ -9,13 +9,13 @@ public static class Singleton
     public static readonly ISettingsService SettingsService = new JsonSettingsService();
     public static readonly AppSettingsManager AppSettingsManager = new (SettingsService);
     public static readonly IDataCaptureService AudioCaptureService;
-    public static readonly ITextProducer TextProducer;
+    public static readonly ITranscribedTextProducer TranscribedTextProducer;
 
     static Singleton()
     {
-        var textDataPackageProcessor = new TextDataPackageProcessor();
-        TextProducer = textDataPackageProcessor;
-        var dataProcessor = new DataProcessService(
+        var textDataPackageProcessor = new RandomTextDataObjectProcessor();
+        TranscribedTextProducer = textDataPackageProcessor;
+        var dataProcessor = new DataProcessor(
             AppSettingsManager.AudioProcessSettings,
             [
                 new NAudioSaveDataPackageProcessor(AppSettingsManager.AudioSettings),

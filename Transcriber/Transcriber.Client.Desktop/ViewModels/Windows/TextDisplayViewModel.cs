@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
 using Transcriber.Client.Desktop.Services;
+using Transcriber.Core.Models;
 
 namespace Transcriber.Client.Desktop.ViewModels.Windows;
 
@@ -29,12 +30,12 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
 
     public TextDisplayViewModel()
     {
-        Observable.FromEventPattern<EventHandler<string>, string>(
-                h => Singleton.TextProducer.TextConverted += h,
-                h => Singleton.TextProducer.TextConverted -= h)
-            .Select(e => e.EventArgs)
+        Observable.FromEventPattern<EventHandler<TextTranscribedEventArgs>, TextTranscribedEventArgs>(
+                h => Singleton.TranscribedTextProducer.OnTextTranscribed += h,
+                h => Singleton.TranscribedTextProducer.OnTextTranscribed -= h)
+            .Select(e => e.EventArgs.TranscribeResult)
             .ObserveOn(RxApp.MainThreadScheduler) 
-            .Subscribe(ShowText);
+            .Subscribe(ShowTextFromTranscribeResult);
         
         _currentHideTimer = Observable
             .Timer(TimeSpan.FromSeconds(2))
@@ -66,6 +67,11 @@ public class TextDisplayViewModel: ViewModelBase, IDisposable
                 }
             });
 
+    }
+
+    private void ShowTextFromTranscribeResult(TranscribeResult result)
+    {
+        ShowText(result.Text!);
     }
 
     private void ShowWindow()

@@ -1,14 +1,11 @@
 using System.Collections.Concurrent;
-using JetBrains.Annotations;
 using Transcriber.Core.Abstractions;
 using Transcriber.Core.Models;
 
 namespace Transcriber.Core.Services;
 
-public class DataProcessService: IDataProcessor
-{    
-    [UsedImplicitly] 
-    private readonly Task _dataPackagesQueueProcessingTask;
+public class DataProcessor: IDataProcessor, IDisposable
+{
     private readonly object _currentDataPackageLock = new();
     private readonly DataProcessSettings _dataProcessSettings;
     private readonly ConcurrentQueue<DataPackage> _dataPackagesQueue = new();
@@ -17,14 +14,14 @@ public class DataProcessService: IDataProcessor
     private DateTime _lastDataPackageProcessTime = DateTime.UtcNow;
     private DataPackage _currentDataPackage;
 
-    public DataProcessService(DataProcessSettings dataProcessSettings, List<IDataPackageProcessor> dataPackageProcessors)
+    public DataProcessor(DataProcessSettings dataProcessSettings, List<IDataPackageProcessor> dataPackageProcessors)
     {
         _dataProcessSettings = dataProcessSettings;
         _dataPackageProcessors = dataPackageProcessors;
         _currentDataPackage = new DataPackage(dataProcessSettings.PackageSize);
         _dataPackagesQueue.Enqueue(_currentDataPackage);
         
-        _dataPackagesQueueProcessingTask = Task.Run(async () =>
+        _ = Task.Run(async () =>
             await ProcessDataPackageQueueLoopAsync(_cancellationTokenSource.Token));
     }
     
@@ -108,5 +105,10 @@ public class DataProcessService: IDataProcessor
             .ToList();
     
         await Task.WhenAll(tasks);
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
     }
 }

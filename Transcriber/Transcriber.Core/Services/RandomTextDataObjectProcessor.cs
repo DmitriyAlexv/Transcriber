@@ -3,11 +3,12 @@ using Transcriber.Core.Models;
 
 namespace Transcriber.Core.Services;
 
-public class TextDataPackageProcessor: IDataPackageProcessor, ITextProducer
+// For test only
+public class RandomTextDataObjectProcessor: IDataPackageProcessor, ITranscribedTextProducer
 {
     private readonly Random _random = new();
-    
-    public event EventHandler<string>? TextConverted;
+
+    public event EventHandler<TextTranscribedEventArgs>? OnTextTranscribed;
 
     public Task ProcessDataPackageAsync(DataPackage dataPackage)
     {
@@ -21,7 +22,7 @@ public class TextDataPackageProcessor: IDataPackageProcessor, ITextProducer
         };
 
         var randomText = simulatedTexts[_random.Next(simulatedTexts.Length)];
-        TextConverted?.Invoke(this, randomText);
+        OnTextTranscribed?.Invoke(this, new TextTranscribedEventArgs(new TranscribeResult(){Text = randomText, Type = "final"}));
         return Task.CompletedTask;
     }
 }
