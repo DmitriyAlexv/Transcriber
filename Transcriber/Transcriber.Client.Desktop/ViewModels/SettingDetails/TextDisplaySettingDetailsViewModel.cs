@@ -2,7 +2,6 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Avalonia.Controls;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
 using Transcriber.Client.Desktop.Services;
@@ -98,15 +97,7 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
         if (_textDisplayPreviewWindow is { IsVisible: true }) 
             return;
         
-        _textDisplayPreviewWindow = new TextDisplayPreviewWindow
-        {
-            DataContext = _textDisplayPreviewViewModel,
-            CanResize = false,
-            ShowInTaskbar = false,
-            Topmost = true,
-            ExtendClientAreaToDecorationsHint = true,
-            TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur]
-        };
+        _textDisplayPreviewWindow = new TextDisplayPreviewWindow { DataContext = _textDisplayPreviewViewModel };
 
         _textDisplayPreviewWindow.Closed += (_, _) => _textDisplayPreviewWindow = null;
         _textDisplayPreviewWindow.Show();

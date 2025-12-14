@@ -25,15 +25,7 @@ public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
             });
         
         var textDisplayViewModel = new TextDisplayViewModel();
-        var textDisplayWindow = new TextDisplayWindow
-        {
-            DataContext = textDisplayViewModel,
-            CanResize = false,
-            ShowInTaskbar = false,
-            Topmost = true,
-            ExtendClientAreaToDecorationsHint = true,
-            TransparencyLevelHint = [WindowTransparencyLevel.AcrylicBlur]
-        };
+        var textDisplayWindow = new TextDisplayWindow{ DataContext = textDisplayViewModel };
         
         Singleton.AppSettingsManager
             .WhenAnyValue(x => x.TextDisplaySettings)

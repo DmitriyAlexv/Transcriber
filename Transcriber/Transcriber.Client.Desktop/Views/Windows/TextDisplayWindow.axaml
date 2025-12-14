@@ -16,23 +16,27 @@
         ShowInTaskbar="False"
         Topmost="True"
         Background="Transparent"
-        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaToDecorationsHint="False"
         SystemDecorations="None"
-        TransparencyLevelHint="Transparent"
+        BorderThickness="0"
+        BorderBrush="Transparent"
         IsVisible="{Binding IsVisible}">
-    <Border Background="Transparent" 
-            CornerRadius="10"
-            Opacity="{Binding Settings.WindowOpacity}"
-            BorderThickness="1"
-            BorderBrush="#FF404040"
-            Margin="1">
+    <Border CornerRadius="10"
+            BorderThickness="0"
+            BorderBrush="Transparent"
+            Margin="0">
+        
+        <Border.Background>
+            <SolidColorBrush Color="#000000" Opacity="{Binding Settings.WindowOpacity}"/>
+        </Border.Background>
+        
         <TextBlock Text="{Binding DisplayText}"
                    FontSize="{Binding Settings.FontSize}"
                    Opacity="{Binding Settings.TextOpacity}"
-                   Foreground="White"
+                   Foreground="#FFFFFF"
                    TextWrapping="Wrap"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Margin="20"/>
+                   Margin="8"/>
     </Border>
 </reactive:ReactiveWindow>
