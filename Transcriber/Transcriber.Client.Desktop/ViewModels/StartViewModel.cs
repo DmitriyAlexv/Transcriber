@@ -1,6 +1,7 @@
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Services;
 using Transcriber.Core.Models;
@@ -73,27 +74,31 @@ public class StartViewModel : ViewModelBase
         switch (CurrentState)
         {
             case DataCaptureState.Stopped:
-                TransitionToStarting();
+                _ = TransitionToStarting();
                 break;
             case DataCaptureState.Started:
-                TransitionToStopping();
+                _ = TransitionToStopping();
                 break;
         }
     }
     
-    private void TransitionToStarting()
+    private async Task TransitionToStarting()
     {
         CurrentState = DataCaptureState.Starting;
         
         Singleton.TranscribedTextCaptureService.StartCapture();
+        await Task.Delay(200);
         Singleton.AudioCaptureService.StartCapture();
+        
+        
     }
     
-    private void TransitionToStopping()
+    private async Task TransitionToStopping()
     {
         CurrentState = DataCaptureState.Stopping;
         
         Singleton.TranscribedTextCaptureService.StopCapture();
+        await Task.Delay(200);
         Singleton.AudioCaptureService.StopCapture();
     }
 }
