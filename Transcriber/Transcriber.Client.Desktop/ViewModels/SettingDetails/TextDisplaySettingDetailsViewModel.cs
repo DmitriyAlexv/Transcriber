@@ -2,16 +2,19 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
 using Transcriber.Client.Desktop.Services;
+using Transcriber.Client.Desktop.ViewModels.Abstractions;
 using Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
 using Transcriber.Client.Desktop.ViewModels.Windows;
 using Transcriber.Client.Desktop.Views.Windows;
 
 namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
 
-public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableViewModel
+public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableViewModel, IHaveTitle
 {
     private readonly TextDisplayPreviewViewModel _textDisplayPreviewViewModel;
     
@@ -19,6 +22,7 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
     private TextDisplayPreviewWindow? _textDisplayPreviewWindow;
     private string _previewText = "Пример текста для preview. Этот текст будет меняться в реальном времени.";
     
+    public string Title => "Текст";
     public ViewModelActivator Activator { get; } = new();
 
     public TextDisplaySettings Settings
@@ -65,6 +69,14 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
                 .Throttle(TimeSpan.FromMilliseconds(10))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => UpdatePreviewSettings());
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow.Screens.Primary: { } primaryScreen })
+            {
+                var bounds = primaryScreen.Bounds;
+                Settings.ScreenWidth = bounds.Width;
+                Settings.ScreenHeight = bounds.Height;
+                UpdatePreviewSettings();
+            }
 
             var textSubscription = this.WhenAnyValue(x => x.PreviewText)
                 .Subscribe(UpdatePreviewText);
@@ -133,10 +145,12 @@ public class TextDisplaySettingDetailsViewModel : ViewModelBase, IActivatableVie
     {
         return new TextDisplaySettings
         {
-            WindowLeft = textDisplaySettings.WindowLeft,
-            WindowTop = textDisplaySettings.WindowTop,
+            ScreenWidth = textDisplaySettings.ScreenWidth,
+            ScreenHeight = textDisplaySettings.ScreenHeight,
             WindowWidth = textDisplaySettings.WindowWidth,
             WindowHeight = textDisplaySettings.WindowHeight,
+            WindowLeft = textDisplaySettings.WindowLeft,
+            WindowTop = textDisplaySettings.WindowTop,
             WindowOpacity = textDisplaySettings.WindowOpacity,
             TextOpacity = textDisplaySettings.TextOpacity,
             FontSize = textDisplaySettings.FontSize

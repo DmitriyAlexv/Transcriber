@@ -1,11 +1,13 @@
 using System.Reactive;
 using ReactiveUI;
+using Transcriber.Client.Desktop.ViewModels.Abstractions;
 using Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
 
 namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
 
-public class AudioProcessSettingDetailsViewModel: ViewModelBase
+public class AudioProcessSettingDetailsViewModel: ViewModelBase, IHaveTitle
 {
+    public string Title => "Обработка";
     public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
     
     public AudioProcessSettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)

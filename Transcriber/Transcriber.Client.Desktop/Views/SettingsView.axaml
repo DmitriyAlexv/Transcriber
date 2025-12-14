@@ -4,26 +4,49 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:reactive="http://reactiveui.net"
+    xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels"
     mc:Ignorable="d"
     x:Class="Transcriber.Client.Desktop.Views.SettingsView"
     x:TypeArguments="vm:SettingsViewModel"
     x:DataType="vm:SettingsViewModel">
     
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="8" Margin="16">
+    <Grid RowDefinitions="60,*">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal" 
+                    Spacing="8"
+                    VerticalAlignment="Center"
+                    Margin="16,0">
+            <Button Command="{Binding SettingsNavigationViewModel.NavigateBackCommand}"
+                    IsVisible="{Binding SettingsNavigationViewModel.IsVisibleNavigateBack}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Padding="4"
+                    CornerRadius="16"
+                    Cursor="Hand">
+                <material:MaterialIcon
+                    Kind="ChevronLeft"
+                    Width="24"
+                    Height="24"/>
+            </Button>
             <TextBlock 
-                Text="Настройки"
+                Text="{Binding SettingsNavigationViewModel.CurrentTitle}"
                 FontSize="24"
                 FontWeight="Bold"
-                Margin="0,0,0,16"/>
-            
-            <Grid>
+                Foreground="#2196F3"
+                VerticalAlignment="Center"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="8" Margin="16">
                 <ContentControl
-                    Content="{Binding CurrentViewModel}"
+                    Content="{Binding SettingsNavigationViewModel.CurrentViewModel}"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"/>
-            </Grid>
-        </StackPanel>
-    </ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </reactive:ReactiveUserControl>

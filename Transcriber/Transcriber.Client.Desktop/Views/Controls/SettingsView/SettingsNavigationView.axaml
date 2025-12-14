@@ -10,15 +10,12 @@
              x:TypeArguments="vm:SettingsNavigationViewModel"
              x:DataType="vm:SettingsNavigationViewModel">
     
-    <Grid RowDefinitions="*,*,*">
+    <StackPanel Spacing="12">
         <settingsView:SettingDetailsNavigationItem 
-            Grid.Row="0" 
             DataContext="{Binding AudioSettingDetailsNavigationItemViewModel}"/>
         <settingsView:SettingDetailsNavigationItem 
-            Grid.Row="1" 
             DataContext="{Binding AudioProcessingSettingDetailNavigationItemViewModel}"/>
-        <settingsView:SettingDetailsNavigationItem 
-            Grid.Row="2" 
+        <settingsView:SettingDetailsNavigationItem
             DataContext="{Binding TextDisplaySettingDetailsNavigationItemViewModel}"/>
-    </Grid>
+    </StackPanel>
 </reactive:ReactiveUserControl>

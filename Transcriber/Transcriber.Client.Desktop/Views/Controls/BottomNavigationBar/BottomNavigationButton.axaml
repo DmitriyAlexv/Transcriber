@@ -23,6 +23,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand"/>
         </Style>
         
         <Style Selector="material|MaterialIcon.NavigationIcon">

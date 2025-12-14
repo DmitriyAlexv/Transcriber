@@ -3,10 +3,12 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Splat;
+using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels;
 using Transcriber.Client.Desktop.Views;
 

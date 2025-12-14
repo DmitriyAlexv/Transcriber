@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reactive.Disposables;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar;

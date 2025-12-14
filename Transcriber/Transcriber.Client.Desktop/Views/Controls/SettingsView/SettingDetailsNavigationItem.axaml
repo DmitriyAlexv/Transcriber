@@ -11,78 +11,83 @@
     x:DataType="vm:SettingDetailsNavigationItemViewModel"
     x:TypeArguments="vm:SettingDetailsNavigationItemViewModel">
     
-    <Button Command="{Binding NavigateCommand}"
+    <Border 
+        CornerRadius="0"
+        BorderBrush="#E0E0E0"
+        BorderThickness="0,0,0,1"
+        Padding="0,4">
+        <Button Command="{Binding NavigateCommand}"
             HorizontalAlignment="Stretch"
             Background="Transparent"
             BorderThickness="0"
-            Padding="0"
             Cursor="Hand">
         
-        <Button.Template>
-            <ControlTemplate>
-                <Border Name="PART_Border"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8"
-                        Padding="16">
-                    
-                    <Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*,Auto">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border Name="PART_Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            Padding="4">
+                        
+                        <Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*,Auto">
 
-                        <material:MaterialIcon 
-                            Grid.Column="0"
-                            Kind="{Binding Icon}"
-                            Width="24"
-                            Height="24"
-                            Margin="0,0,16,0"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        
-                        <StackPanel Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Margin="0">
-                            <TextBlock 
-                                Text="{Binding Text}"
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                            
-                            <TextBlock 
-                                Text="{Binding Description}"
-                                FontSize="12"
-                                Opacity="0.7"
-                                Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </StackPanel>
-                        
-                        <Border Grid.Column="2"
-                                VerticalAlignment="Center"
-                                Classes="SettingDetailsNavigationArrow"
-                                Margin="8, 0, 0, 0"
-                                CornerRadius="16">
-                            <material:MaterialIcon
-                                Kind="ChevronRight"
+                            <material:MaterialIcon 
+                                Grid.Column="0"
+                                Kind="{Binding Icon}"
                                 Width="24"
                                 Height="24"
+                                Margin="0,0,16,0"
+                                VerticalAlignment="Center"
                                 Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                        </Border>
-                    </Grid>
-                </Border>
-            </ControlTemplate>
-        </Button.Template>
-        
-        <Button.Styles>
-            <Style Selector="Button">
-                <Setter Property="Background" Value="Transparent"/>
-            </Style>
-            <Style Selector="Button:pointerover Border.SettingDetailsNavigationArrow">
-                <Setter Property="Background" Value="#cccccc"/>
-            </Style>
-            <Style Selector="Button:pointerover">
-                <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
-            </Style>
-            <Style Selector="Button:pressed">
-                <Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
-            </Style>
-        </Button.Styles>
-    </Button>
+                            
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="0">
+                                <TextBlock 
+                                    Text="{Binding Text}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                                
+                                <TextBlock 
+                                    Text="{Binding Description}"
+                                    FontSize="12"
+                                    Opacity="0.7"
+                                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                            </StackPanel>
+                            
+                            <Border Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Classes="SettingDetailsNavigationArrow"
+                                    Margin="8, 0, 0, 0"
+                                    CornerRadius="16">
+                                <material:MaterialIcon
+                                    Kind="ChevronRight"
+                                    Width="24"
+                                    Height="24"
+                                    Foreground="{DynamicResource ThemeForegroundBrush}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+            
+            <Button.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+                <Style Selector="Button:pointerover Border.SettingDetailsNavigationArrow">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                </Style>
+                <Style Selector="Button:pointerover">
+                    <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
+                </Style>
+                <Style Selector="Button:pressed">
+                    <Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
+                </Style>
+            </Button.Styles>
+        </Button>
+    </Border>
 </reactive:ReactiveUserControl>
