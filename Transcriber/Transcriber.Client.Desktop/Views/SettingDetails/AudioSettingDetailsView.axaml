@@ -1,28 +1,248 @@
 <reactive:ReactiveUserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:reactive="http://reactiveui.net"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.SettingDetails"
+             xmlns:shared="clr-namespace:Transcriber.Client.Desktop.Views.Controls.Shared"
+             xmlns:services="clr-namespace:Transcriber.Client.Desktop.Services"
              mc:Ignorable="d"
              x:Class="Transcriber.Client.Desktop.Views.SettingDetails.AudioSettingDetailsView"
              x:TypeArguments="vm:AudioSettingDetailsViewModel"
              x:DataType="vm:AudioSettingDetailsViewModel">
-    <StackPanel Spacing="16">
-        <!-- Кнопка назад -->
-        <Button 
-            Content="Назад"
-            Command="{Binding NavigateBackCommand}"
-            HorizontalAlignment="Left"
-            Padding="12,8"/>
-            
-        <!-- Контент детальной настройки -->
-        <TextBlock 
-            Text="Настройки источников аудио"
-            FontSize="18"
-            FontWeight="SemiBold"/>
-            
-        <!-- Здесь остальной контент детальной настройки -->
-        <TextBlock Text="Контент настроек аудио источников..." />
-    </StackPanel>
+    <ScrollViewer>
+        <StackPanel Spacing="4">
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8">
+                <StackPanel>
+                    <TextBlock Text="Режим захвата" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#9C27B0"
+                               Margin="0,0,0,10"/>
+                    
+                    <ComboBox ItemsSource="{Binding CaptureModes}"
+                              SelectedItem="{Binding AudioCaptureSettings.Mode}"
+                              BorderThickness="1"
+                              BorderBrush="#9E9E9E"
+                              CornerRadius="3"
+                              Padding="4">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={x:Static services:CaptureModeConverter.Instance}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <TextBlock Text="{Binding ModeDescription}"
+                               Foreground="#757575"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8"
+                    IsVisible="{Binding ShowWhiteList}">
+                <StackPanel>
+                    <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,8">
+                        <TextBlock Text="Белый список устройств" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#4CAF50"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding WhiteListCount, StringFormat='({0})'}"
+                                   FontWeight="Bold"
+                                   Foreground="#4CAF50"/>
+                    </Grid>
+                    
+                    <TextBlock Text="Только эти устройства будут использоваться для захвата аудио"
+                               Foreground="#757575"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,8"/>
+                    
+                    <shared:ListEditorView DataContext="{Binding WhiteListEditor}"/>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8"
+                    IsVisible="{Binding ShowBlackList}">
+                <StackPanel>
+                    <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,8">
+                        <TextBlock Text="Чёрный список устройств" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#F44336"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding BlackListCount, StringFormat='({0})'}"
+                                   FontWeight="Bold"
+                                   Foreground="#F44336"/>
+                    </Grid>
+                    
+                    <TextBlock Text="Эти устройства будут игнорироваться при захвате аудио"
+                               Foreground="#757575"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,8"/>
+                    
+                    <shared:ListEditorView DataContext="{Binding BlackListEditor}"/>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8">
+                <StackPanel>
+                    <TextBlock Text="Параметры аудио" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#9C27B0"
+                               Margin="0,0,0,10"/>
+                    
+                    <StackPanel Margin="0,0,0,12">
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Частота дискретизации" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding AudioCaptureSettings.SampleRate, StringFormat='{}{0} Гц'}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="60"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="8000" 
+                                Maximum="192000" 
+                                Value="{Binding AudioCaptureSettings.SampleRate}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                            <Button Command="{Binding SetSampleRateCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <Button.CommandParameter>
+                                    <sys:Int32>16000</sys:Int32>
+                                </Button.CommandParameter>
+                                <TextBlock Text="16 кГц"/>
+                            </Button>
+                            <Button Command="{Binding SetSampleRateCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <Button.CommandParameter>
+                                    <sys:Int32>44100</sys:Int32>
+                                </Button.CommandParameter>
+                                <TextBlock Text="44.1 кГц"/>
+                            </Button>
+                            <Button Command="{Binding SetSampleRateCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <TextBlock Text="48 кГц"/>
+                                <Button.CommandParameter>
+                                    <sys:Int32>48000</sys:Int32>
+                                </Button.CommandParameter>
+                            </Button>
+                            <Button Command="{Binding SetSampleRateCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <Button.CommandParameter>
+                                    <sys:Int32>96000</sys:Int32>
+                                </Button.CommandParameter>
+                                <TextBlock Text="96 кГц"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Количество каналов" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding AudioCaptureSettings.Channels, StringFormat='{}{0} канал(ов)'}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="60"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="1" 
+                                Maximum="8" 
+                                Value="{Binding AudioCaptureSettings.Channels}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                            <Button Command="{Binding SetChannelsCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <Button.CommandParameter>
+                                    <sys:Int32>1</sys:Int32>
+                                </Button.CommandParameter>
+                                <TextBlock Text="Моно"/>
+                            </Button>
+                            <Button Command="{Binding SetChannelsCommand}"
+                                    Background="#E0E0E0"
+                                    Foreground="#212121"
+                                    BorderThickness="0"
+                                    CornerRadius="3"
+                                    Padding="8,4"
+                                    Cursor="Hand">
+                                <Button.CommandParameter>
+                                    <sys:Int32>2</sys:Int32>
+                                </Button.CommandParameter>
+                                <TextBlock Text="Стерео"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Button Command="{Binding NavigateBackCommand}"
+                    Background="#9C27B0"
+                    Foreground="#FFFFFF"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Height="36"
+                    Margin="0,4,0,0"
+                    Cursor="Hand"
+                    HorizontalAlignment="Right">
+                <StackPanel
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right">
+                    <TextBlock>
+                        Назад
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </ScrollViewer>
 </reactive:ReactiveUserControl>

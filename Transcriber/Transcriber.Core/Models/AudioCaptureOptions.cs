@@ -1,6 +1,6 @@
 namespace Transcriber.Core.Models;
 
-public class AudioSettings
+public class AudioCaptureOptions
 {
     public CaptureMode Mode { get; set; } = CaptureMode.All;
     public List<string> WhiteList { get; set; } = [];

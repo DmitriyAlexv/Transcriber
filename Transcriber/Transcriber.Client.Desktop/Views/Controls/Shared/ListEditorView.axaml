@@ -1,0 +1,84 @@
+<reactive:ReactiveUserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:reactive="http://reactiveui.net"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.Controls.Shared"
+    mc:Ignorable="d"
+    x:Class="Transcriber.Client.Desktop.Views.Controls.Shared.ListEditorView"
+    x:TypeArguments="vm:ListEditorViewModel"
+    x:DataType="vm:ListEditorViewModel">
+    
+    <Grid ColumnDefinitions="*, Auto">
+        <StackPanel>
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Background="#FFFFFF">
+                <ListBox ItemsSource="{Binding Items}"
+                         SelectedItem="{Binding SelectedItem}"
+                         MaxHeight="200"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                     VerticalAlignment="Center"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     Padding="4"
+                                     MinWidth="150">
+                                <TextBox.Styles>
+                                    <Style Selector="TextBox">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="TextBox:pointerover">
+                                        <Setter Property="Background" Value="#F5F5F5"/>
+                                    </Style>
+                                </TextBox.Styles>
+                            </TextBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </StackPanel>
+        <StackPanel Grid.Column="1" 
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Top"
+                    Spacing="4">
+            <Button Command="{Binding AddNewItemCommand}"
+                    Background="#2196F3"
+                    Foreground="#FFFFFF"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Width="32"
+                    Height="32"
+                    Cursor="Hand">
+                <material:MaterialIcon Kind="Plus"/>
+            </Button>
+            <Button Command="{Binding RemoveSelectedItemCommand}"
+                    Background="#F44336"
+                    Foreground="#FFFFFF"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Width="32"
+                    Height="32"
+                    Cursor="Hand"
+                    IsEnabled="{Binding HasSelectedItem}">
+                <material:MaterialIcon Kind="Minus"/>
+            </Button>
+            <Button Command="{Binding ClearAllCommand}"
+                    Background="#F44336"
+                    Foreground="#FFFFFF"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Width="32"
+                    Height="32"
+                    Cursor="Hand">
+                <material:MaterialIcon Kind="TrashCan"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</reactive:ReactiveUserControl>

@@ -8,10 +8,22 @@ namespace Transcriber.Client.Desktop.Services;
 public class AppSettingsManager: ReactiveObject
 {
     private readonly ISettingsService _settingsService;
-    public AudioSettings AudioSettings { get; set; }
-    public DataProcessSettings AudioProcessSettings { get; set; }
-
+    private AudioCaptureSettings _audioCaptureSettings;
+    private AudioProcessSettings _audioProcessSettings;
     private TextDisplaySettings _textDisplaySettings;
+
+    public AudioCaptureSettings AudioCaptureSettings
+    {
+        get => _audioCaptureSettings;
+        set => this.RaiseAndSetIfChanged(ref _audioCaptureSettings, value);
+    }
+
+    public AudioProcessSettings AudioProcessSettings
+    {
+        get => _audioProcessSettings;
+        set => this.RaiseAndSetIfChanged(ref _audioProcessSettings, value);
+    }
+    
     public TextDisplaySettings TextDisplaySettings
     {
         get => _textDisplaySettings;
@@ -20,19 +32,21 @@ public class AppSettingsManager: ReactiveObject
 
     public AppSettingsManager(ISettingsService settingsService)
     {
-        settingsService.RegisterSettings<AudioSettings>("audio_settings.json");
-        settingsService.RegisterSettings<DataProcessSettings>("audio_process_settings.json");
+        settingsService.RegisterSettings<AudioCaptureOptions>("audio_settings.json");
+        settingsService.RegisterSettings<DataProcessOptions>("audio_process_settings.json");
         settingsService.RegisterSettings<TextDisplaySettings>("text_display_settings.json");
         _settingsService = settingsService;
-        AudioSettings = _settingsService.GetSettings<AudioSettings>();
-        AudioProcessSettings = _settingsService.GetSettings<DataProcessSettings>();
+        AudioCaptureSettings = new AudioCaptureSettings();
+        AudioProcessSettings = new AudioProcessSettings();
+        AudioCaptureSettings.AudioCaptureOptions = _settingsService.GetSettings<AudioCaptureOptions>();
+        AudioProcessSettings.DataProcessOptions = _settingsService.GetSettings<DataProcessOptions>();
         TextDisplaySettings = _settingsService.GetSettings<TextDisplaySettings>();
     }
     
     public void SaveAll()
     {
-        _settingsService.SaveSettings(AudioSettings);
-        _settingsService.SaveSettings(AudioProcessSettings);
+        _settingsService.SaveSettings(AudioCaptureSettings.AudioCaptureOptions);
+        _settingsService.SaveSettings(AudioProcessSettings.DataProcessOptions);
         _settingsService.SaveSettings(TextDisplaySettings);
     }
 }

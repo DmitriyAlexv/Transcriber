@@ -5,11 +5,11 @@ using Transcriber.Core.Models;
 namespace Transcriber.Infrastructure.Audio.Services;
 
 // For test only
-public class NAudioSaveDataPackageProcessor(AudioSettings audioSettings) : IDataPackageProcessor
+public class NAudioSaveDataPackageProcessor(AudioCaptureOptions audioCaptureOptions) : IDataPackageProcessor
 {
     private const string OutputDirectory = @"C:\Dima\ADO\Transcriber\Transcriber\TestAudio";
     private readonly List<DataPackage> _dataPackages = [];
-    private readonly WaveFormat _waveFormat = new(audioSettings.SampleRate, audioSettings.Channels);
+    private readonly WaveFormat _waveFormat = new(audioCaptureOptions.SampleRate, audioCaptureOptions.Channels);
 
     public async Task ProcessDataPackageAsync(DataPackage dataPackage)
     {

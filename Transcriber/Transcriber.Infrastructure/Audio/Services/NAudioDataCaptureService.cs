@@ -8,7 +8,7 @@ namespace Transcriber.Infrastructure.Audio.Services;
 public class NAudioDataCaptureService : IDataCaptureService
 {
     private readonly object _captureLock = new();
-    private readonly AudioSettings _audioSettings;
+    private readonly AudioCaptureOptions _audioCaptureOptions;
     private readonly WasapiLoopbackCapture _capture;
 
     private DataCaptureState _state = DataCaptureState.Stopped;
@@ -26,12 +26,12 @@ public class NAudioDataCaptureService : IDataCaptureService
     public event EventHandler<DataCapturedEventArgs>? OnDataCaptured;
     public event EventHandler<CaptureStatusChangedEventArgs>? OnStatusChanged;
 
-    public NAudioDataCaptureService(AudioSettings audioSettings)
+    public NAudioDataCaptureService(AudioCaptureOptions audioCaptureOptions)
     {
-        _audioSettings = audioSettings;
+        _audioCaptureOptions = audioCaptureOptions;
         _capture = new WasapiLoopbackCapture()
         {
-            WaveFormat = new WaveFormat(audioSettings.SampleRate, audioSettings.Channels)
+            WaveFormat = new WaveFormat(audioCaptureOptions.SampleRate, audioCaptureOptions.Channels)
         };
         _capture.DataAvailable += OnDataAvailable;
         _capture.RecordingStopped += OnStopped;

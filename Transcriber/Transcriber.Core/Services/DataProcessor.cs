@@ -7,18 +7,18 @@ namespace Transcriber.Core.Services;
 public class DataProcessor: IDataProcessor, IDisposable
 {
     private readonly object _currentDataPackageLock = new();
-    private readonly DataProcessSettings _dataProcessSettings;
+    private readonly DataProcessOptions _dataProcessOptions;
     private readonly ConcurrentQueue<DataPackage> _dataPackagesQueue = new();
     private readonly List<IDataPackageProcessor> _dataPackageProcessors;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private DateTime _lastDataPackageProcessTime = DateTime.UtcNow;
     private DataPackage _currentDataPackage;
 
-    public DataProcessor(DataProcessSettings dataProcessSettings, List<IDataPackageProcessor> dataPackageProcessors)
+    public DataProcessor(DataProcessOptions dataProcessOptions, List<IDataPackageProcessor> dataPackageProcessors)
     {
-        _dataProcessSettings = dataProcessSettings;
+        _dataProcessOptions = dataProcessOptions;
         _dataPackageProcessors = dataPackageProcessors;
-        _currentDataPackage = new DataPackage(dataProcessSettings.PackageSize);
+        _currentDataPackage = new DataPackage(dataProcessOptions.PackageSize);
         _dataPackagesQueue.Enqueue(_currentDataPackage);
         
         _ = Task.Run(async () =>
@@ -44,7 +44,7 @@ public class DataProcessor: IDataProcessor, IDisposable
     
     private async Task ProcessDataPackageQueueLoopAsync(CancellationToken cancellationToken)
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(_dataProcessSettings.MinPeriod));
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(_dataProcessOptions.MinPeriod));
 
         try
         {
@@ -87,12 +87,12 @@ public class DataProcessor: IDataProcessor, IDisposable
 
     private void PrepareNewPackage()
     {
-        _currentDataPackage = new DataPackage(_dataProcessSettings.PackageSize);
+        _currentDataPackage = new DataPackage(_dataProcessOptions.PackageSize);
         _dataPackagesQueue.Enqueue(_currentDataPackage);
     }
     
     private bool MaxPeriodExceeded()
-        => (DateTime.UtcNow - _lastDataPackageProcessTime).TotalMilliseconds >= _dataProcessSettings.MaxPeriod;
+        => (DateTime.UtcNow - _lastDataPackageProcessTime).TotalMilliseconds >= _dataProcessOptions.MaxPeriod;
 
     private async Task ProcessDataPackage(DataPackage dataPackage)
     {

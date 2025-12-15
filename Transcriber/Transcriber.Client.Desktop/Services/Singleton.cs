@@ -20,7 +20,7 @@ public static class Singleton
         TranscribedTextProducer = transcribedTextDataPackageProcessor;
         
         var dataProcessor = new DataProcessor(
-            AppSettingsManager.AudioProcessSettings,
+            AppSettingsManager.AudioProcessSettings.DataProcessOptions,
             [
                 //new NAudioSaveDataPackageProcessor(AppSettingsManager.AudioSettings),
                 //randomTextDataObjectProcessor,
@@ -32,7 +32,7 @@ public static class Singleton
                 transcribedTextDataPackageProcessor
             ]);
         
-        AudioCaptureService = new NAudioDataCaptureService(AppSettingsManager.AudioSettings);
+        AudioCaptureService = new NAudioDataCaptureService(AppSettingsManager.AudioCaptureSettings.AudioCaptureOptions);
         AudioCaptureService.OnDataCaptured += dataProcessor.ReceiveData;
 
         TranscribedTextCaptureService = new ProcessedAudioDataCaptureService();

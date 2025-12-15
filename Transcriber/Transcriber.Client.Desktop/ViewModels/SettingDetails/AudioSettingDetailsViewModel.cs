@@ -1,17 +1,121 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using ReactiveUI;
+using Transcriber.Client.Desktop.Models;
+using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Abstractions;
 using Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
+using Transcriber.Client.Desktop.ViewModels.Controls.Shared;
+using Transcriber.Core.Models;
 
 namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
 
-public class AudioSettingDetailsViewModel: ViewModelBase, IHaveTitle
+public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel, IHaveTitle
 {
     public string Title => "Аудио";
-    public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
+    private AudioCaptureSettings _audioAudioCaptureSettings;
+
+    public AudioCaptureSettings AudioCaptureSettings
+    {
+        get => _audioAudioCaptureSettings;
+        set => this.RaiseAndSetIfChanged(ref _audioAudioCaptureSettings, value);
+    }
     
+    public ViewModelActivator Activator { get; } = new();
+    public ListEditorViewModel WhiteListEditor { get; }
+    public ListEditorViewModel BlackListEditor { get; }
+
+    public ObservableCollection<CaptureMode> CaptureModes { get; }
+    public bool ShowWhiteList => AudioCaptureSettings.Mode is CaptureMode.WhiteList;
+    public bool ShowBlackList => AudioCaptureSettings.Mode is CaptureMode.BlackList;
+    public int WhiteListCount => AudioCaptureSettings.WhiteList.Count;
+    public int BlackListCount => AudioCaptureSettings.BlackList.Count;
+
+    public string ModeDescription
+    {
+        get
+        {
+            return AudioCaptureSettings.Mode switch
+            {
+                CaptureMode.All => "Захватывать аудио со всех устройств",
+                CaptureMode.WhiteList => "Захватывать аудио только из белого списка",
+                CaptureMode.BlackList => "Захватывать аудио со всех устройств, кроме чёрного списка",
+                _ => ""
+            };
+        }
+    }
+
+    public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
+    public ReactiveCommand<int, Unit> SetSampleRateCommand { get; }
+    public ReactiveCommand<int, Unit> SetChannelsCommand { get; }
+
     public AudioSettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)
     {
-        NavigateBackCommand = ReactiveCommand.Create(settingsNavigationViewModel.NavigateBack);
+        _audioAudioCaptureSettings = AudioCaptureSettings = Copy(Singleton.AppSettingsManager.AudioCaptureSettings);
+
+        var whiteList = new ObservableCollection<string>(_audioAudioCaptureSettings.WhiteList);
+        var blackList = new ObservableCollection<string>(_audioAudioCaptureSettings.BlackList);
+
+        WhiteListEditor = new ListEditorViewModel(whiteList);
+        BlackListEditor = new ListEditorViewModel(blackList);
+
+        WhiteListEditor.SourceCollection.CollectionChanged += (_, _) =>
+        {
+            _audioAudioCaptureSettings.WhiteList = WhiteListEditor.SourceCollection.ToList();
+            this.RaisePropertyChanged(nameof(WhiteListCount));
+        };
+
+        BlackListEditor.SourceCollection.CollectionChanged += (_, _) =>
+        {
+            _audioAudioCaptureSettings.BlackList = BlackListEditor.SourceCollection.ToList();
+            this.RaisePropertyChanged(nameof(BlackListCount));
+        };
+
+        CaptureModes =
+        [
+            CaptureMode.All,
+            CaptureMode.WhiteList,
+            CaptureMode.BlackList
+        ];
+
+        NavigateBackCommand = ReactiveCommand.Create(() => 
+        {
+            Singleton.AppSettingsManager.AudioCaptureSettings = Copy(AudioCaptureSettings);
+            settingsNavigationViewModel.NavigateBack();
+        });
+
+        SetSampleRateCommand = ReactiveCommand.Create<int>(rate => { AudioCaptureSettings.SampleRate = rate; });
+
+        SetChannelsCommand = ReactiveCommand.Create<int>(channels => { AudioCaptureSettings.Channels = channels; });
+
+        this.WhenActivated(disposables =>
+        {
+            this.WhenAnyValue(x => x.AudioCaptureSettings.Mode)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ =>
+                {
+                    this.RaisePropertyChanged(nameof(ShowWhiteList));
+                    this.RaisePropertyChanged(nameof(ShowBlackList));
+                    this.RaisePropertyChanged(nameof(ModeDescription));
+                })
+                .DisposeWith(disposables);
+        });
+    }
+    
+    private AudioCaptureSettings Copy(AudioCaptureSettings textDisplayCaptureOptions)
+    {
+        return new AudioCaptureSettings
+        {
+            Mode = textDisplayCaptureOptions.Mode,
+            WhiteList = textDisplayCaptureOptions.WhiteList,
+            BlackList = textDisplayCaptureOptions.BlackList,
+            Channels = textDisplayCaptureOptions.Channels,
+            SampleRate = textDisplayCaptureOptions.SampleRate,
+            AudioCaptureOptions = textDisplayCaptureOptions.AudioCaptureOptions
+        };
     }
 }

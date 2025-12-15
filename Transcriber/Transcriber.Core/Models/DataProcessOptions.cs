@@ -1,6 +1,6 @@
 namespace Transcriber.Core.Models;
 
-public class DataProcessSettings
+public class DataProcessOptions
 {
     public int PackageSize { get; set; } = 4800;
     public int DueTime { get; set; } = 1000;
