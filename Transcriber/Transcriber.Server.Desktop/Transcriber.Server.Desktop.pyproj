@@ -22,9 +22,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="PythonApplication1.py" />
-  </ItemGroup>
-  <ItemGroup>
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>0.0</Version>
