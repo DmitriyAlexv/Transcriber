@@ -8,21 +8,114 @@
              x:Class="Transcriber.Client.Desktop.Views.SettingDetails.AudioProcessSettingDetailsView"
              x:TypeArguments="vm:AudioProcessSettingDetailsViewModel"
              x:DataType="vm:AudioProcessSettingDetailsViewModel">
-    <StackPanel Spacing="16">
-        <!-- Кнопка назад -->
-        <Button 
-            Content="Назад"
-            Command="{Binding NavigateBackCommand}"
-            HorizontalAlignment="Left"
-            Padding="12,8"/>
+    <ScrollViewer>
+        <StackPanel Spacing="4">
+            <Border BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="8">
+                <StackPanel>
+                    <TextBlock Text="Настройки обработки данных" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#9C27B0"
+                               Margin="0,0,0,10"/>
+                    
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Размер пакета" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding Settings.PackageSize}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="40"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="100" 
+                                Maximum="10000" 
+                                Value="{Binding Settings.PackageSize}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                    </StackPanel>
+                    
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Время выполнения (мс)" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding Settings.DueTime}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="40"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="100" 
+                                Maximum="5000" 
+                                Value="{Binding Settings.DueTime}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                    </StackPanel>
+                    
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Минимальный период (мс)" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding Settings.MinPeriod}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="40"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="10" 
+                                Maximum="500" 
+                                Value="{Binding Settings.MinPeriod}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                    </StackPanel>
+                    
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                            <TextBlock Text="Максимальный период (мс)" 
+                                       VerticalAlignment="Center"
+                                       Foreground="#212121"/>
+                            <TextBlock Text="{Binding Settings.MaxPeriod}" 
+                                       Grid.Column="1"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       MinWidth="40"
+                                       TextAlignment="Right"/>
+                        </Grid>
+                        <Slider Minimum="1000" 
+                                Maximum="20000" 
+                                Value="{Binding Settings.MaxPeriod}"
+                                Foreground="#2196F3"
+                                Background="#E0E0E0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             
-        <!-- Контент детальной настройки -->
-        <TextBlock 
-            Text="Настройки источников аудио"
-            FontSize="18"
-            FontWeight="SemiBold"/>
-            
-        <!-- Здесь остальной контент детальной настройки -->
-        <TextBlock Text="Контент настроек аудио источников..." />
-    </StackPanel>
+            <Button Command="{Binding NavigateBackCommand}"
+                    Background="#9C27B0"
+                    Foreground="#FFFFFF"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Height="36"
+                    Margin="0,4,0,0"
+                    Cursor="Hand"
+                    HorizontalAlignment="Right">
+                <StackPanel
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right">
+                    <TextBlock>
+                        Назад
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </ScrollViewer>
 </reactive:ReactiveUserControl>
