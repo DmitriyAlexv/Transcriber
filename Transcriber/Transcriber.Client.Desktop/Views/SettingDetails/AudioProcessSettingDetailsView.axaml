@@ -26,7 +26,7 @@
                             <TextBlock Text="Размер пакета" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding Settings.PackageSize}" 
+                            <TextBlock Text="{Binding AudioProcessSettings.PackageSize}" 
                                        Grid.Column="1"
                                        FontWeight="Bold"
                                        Foreground="#2196F3"
@@ -35,7 +35,7 @@
                         </Grid>
                         <Slider Minimum="100" 
                                 Maximum="10000" 
-                                Value="{Binding Settings.PackageSize}"
+                                Value="{Binding AudioProcessSettings.PackageSize}"
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
@@ -45,7 +45,7 @@
                             <TextBlock Text="Время выполнения (мс)" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding Settings.DueTime}" 
+                            <TextBlock Text="{Binding AudioProcessSettings.DueTime}" 
                                        Grid.Column="1"
                                        FontWeight="Bold"
                                        Foreground="#2196F3"
@@ -54,7 +54,7 @@
                         </Grid>
                         <Slider Minimum="100" 
                                 Maximum="5000" 
-                                Value="{Binding Settings.DueTime}"
+                                Value="{Binding AudioProcessSettings.DueTime}"
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
@@ -64,7 +64,7 @@
                             <TextBlock Text="Минимальный период (мс)" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding Settings.MinPeriod}" 
+                            <TextBlock Text="{Binding AudioProcessSettings.MinPeriod}" 
                                        Grid.Column="1"
                                        FontWeight="Bold"
                                        Foreground="#2196F3"
@@ -73,7 +73,7 @@
                         </Grid>
                         <Slider Minimum="10" 
                                 Maximum="500" 
-                                Value="{Binding Settings.MinPeriod}"
+                                Value="{Binding AudioProcessSettings.MinPeriod}"
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
@@ -83,7 +83,7 @@
                             <TextBlock Text="Максимальный период (мс)" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding Settings.MaxPeriod}" 
+                            <TextBlock Text="{Binding AudioProcessSettings.MaxPeriod}" 
                                        Grid.Column="1"
                                        FontWeight="Bold"
                                        Foreground="#2196F3"
@@ -92,7 +92,7 @@
                         </Grid>
                         <Slider Minimum="1000" 
                                 Maximum="20000" 
-                                Value="{Binding Settings.MaxPeriod}"
+                                Value="{Binding AudioProcessSettings.MaxPeriod}"
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>

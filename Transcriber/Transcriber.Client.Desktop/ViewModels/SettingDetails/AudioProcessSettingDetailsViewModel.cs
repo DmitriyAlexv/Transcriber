@@ -1,4 +1,5 @@
 using System.Reactive;
+using System.Reactive.Disposables;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
 using Transcriber.Client.Desktop.Services;
@@ -13,7 +14,7 @@ public class AudioProcessSettingDetailsViewModel: ViewModelBase, IHaveTitle
     
     public string Title => "Обработка";
     
-    public AudioProcessSettings Settings
+    public AudioProcessSettings AudioProcessSettings
     {
         get => _audioProcessSettings;
         set => this.RaiseAndSetIfChanged(ref _audioProcessSettings, value);
@@ -22,11 +23,11 @@ public class AudioProcessSettingDetailsViewModel: ViewModelBase, IHaveTitle
     
     public AudioProcessSettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)
     {
-        Settings = Copy(Singleton.AppSettingsManager.AudioProcessSettings);
+        _audioProcessSettings = AudioProcessSettings = Copy(Singleton.AppSettingsManager.AudioProcessSettings);
         
         NavigateBackCommand = ReactiveCommand.Create(() => 
         {
-            Singleton.AppSettingsManager.AudioProcessSettings = Copy(Settings);
+            Singleton.AppSettingsManager.AudioProcessSettings = Copy(AudioProcessSettings);
             settingsNavigationViewModel.NavigateBack();
         });
     }

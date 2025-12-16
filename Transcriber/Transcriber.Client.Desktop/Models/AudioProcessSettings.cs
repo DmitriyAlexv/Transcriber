@@ -57,10 +57,10 @@ public class AudioProcessSettings: ReactiveObject
         set
         {
             this.RaiseAndSetIfChanged(ref _dataProcessOptions, value);
-            DataProcessOptions.PackageSize = value.PackageSize;
-            DataProcessOptions.DueTime = value.DueTime;
-            DataProcessOptions.MinPeriod = value.MinPeriod;
-            DataProcessOptions.MaxPeriod = value.MaxPeriod;
+            PackageSize = value.PackageSize;
+            DueTime = value.DueTime;
+            MinPeriod = value.MinPeriod;
+            MaxPeriod = value.MaxPeriod;
         }
     }
 }

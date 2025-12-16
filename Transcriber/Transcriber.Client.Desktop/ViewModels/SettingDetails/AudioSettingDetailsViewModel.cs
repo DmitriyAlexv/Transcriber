@@ -17,12 +17,12 @@ namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
 public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel, IHaveTitle
 {
     public string Title => "Аудио";
-    private AudioCaptureSettings _audioAudioCaptureSettings;
+    private AudioCaptureSettings _audioCaptureSettings;
 
     public AudioCaptureSettings AudioCaptureSettings
     {
-        get => _audioAudioCaptureSettings;
-        set => this.RaiseAndSetIfChanged(ref _audioAudioCaptureSettings, value);
+        get => _audioCaptureSettings;
+        set => this.RaiseAndSetIfChanged(ref _audioCaptureSettings, value);
     }
     
     public ViewModelActivator Activator { get; } = new();
@@ -55,23 +55,23 @@ public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel
 
     public AudioSettingDetailsViewModel(SettingsNavigationViewModel settingsNavigationViewModel)
     {
-        _audioAudioCaptureSettings = AudioCaptureSettings = Copy(Singleton.AppSettingsManager.AudioCaptureSettings);
+        _audioCaptureSettings = AudioCaptureSettings = Copy(Singleton.AppSettingsManager.AudioCaptureSettings);
 
-        var whiteList = new ObservableCollection<string>(_audioAudioCaptureSettings.WhiteList);
-        var blackList = new ObservableCollection<string>(_audioAudioCaptureSettings.BlackList);
+        var whiteList = new ObservableCollection<string>(_audioCaptureSettings.WhiteList);
+        var blackList = new ObservableCollection<string>(_audioCaptureSettings.BlackList);
 
         WhiteListEditor = new ListEditorViewModel(whiteList);
         BlackListEditor = new ListEditorViewModel(blackList);
 
         WhiteListEditor.SourceCollection.CollectionChanged += (_, _) =>
         {
-            _audioAudioCaptureSettings.WhiteList = WhiteListEditor.SourceCollection.ToList();
+            _audioCaptureSettings.WhiteList = WhiteListEditor.SourceCollection.ToList();
             this.RaisePropertyChanged(nameof(WhiteListCount));
         };
 
         BlackListEditor.SourceCollection.CollectionChanged += (_, _) =>
         {
-            _audioAudioCaptureSettings.BlackList = BlackListEditor.SourceCollection.ToList();
+            _audioCaptureSettings.BlackList = BlackListEditor.SourceCollection.ToList();
             this.RaisePropertyChanged(nameof(BlackListCount));
         };
 
