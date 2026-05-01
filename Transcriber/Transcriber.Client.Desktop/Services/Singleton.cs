@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Transcriber.Core.Abstractions;
 using Transcriber.Core.Models;
 using Transcriber.Core.Services;
@@ -16,7 +17,6 @@ public static class Singleton
     static Singleton()
     {
         var transcribedTextDataPackageProcessor = new ProduceTextDataObjectProcessor();
-        var randomTextDataObjectProcessor = new RandomTextDataPackageProcessor();
         TranscribedTextProducer = transcribedTextDataPackageProcessor;
         
         var dataProcessor = new DataProcessor(
@@ -31,11 +31,23 @@ public static class Singleton
             [
                 transcribedTextDataPackageProcessor
             ]);
-        
-        AudioCaptureService = new NAudioDataCaptureService(AppSettingsManager.AudioCaptureSettings.AudioCaptureOptions);
+
+        AudioCaptureService = CreateAudioCaptureService();
         AudioCaptureService.OnDataCaptured += dataProcessor.ReceiveData;
 
         TranscribedTextCaptureService = new ProcessedAudioDataCaptureService();
         TranscribedTextCaptureService.OnDataCaptured += transcribedDataProcessor.ReceiveData;
+    }
+    
+    private static IDataCaptureService CreateAudioCaptureService()
+    {
+        var audioOptions = AppSettingsManager.AudioCaptureSettings.AudioCaptureOptions;
+        
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return new NAudioDataCaptureService(audioOptions);
+        }
+        
+        return new PortAudioCaptureService(audioOptions);
     }
 }

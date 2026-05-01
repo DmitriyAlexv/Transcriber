@@ -33,9 +33,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TranscriberServerVosk.py" />
     <Content Include="TranscriberServerVoskV2.py" />
-    <Content Include="TranscriberServerWhisper.py" />
     <Content Include="TranscriverClientVoskV2.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

@@ -7,4 +7,5 @@ public class AudioCaptureOptions
     public List<string> BlackList { get; set; } = [];
     public int SampleRate { get; set; } = 44100;
     public int Channels { get; set; } = 2;
+    public int DeviceId { get; set; } = 37;
 }
