@@ -34,7 +34,7 @@ public class PortAudioCaptureService : IDataCaptureService, IDeviceSelectable
         _audioCaptureOptions = audioCaptureOptions;
         EnsureInitialized();
 
-        var device = audioCaptureOptions.CaptureDevice;
+        var device = audioCaptureOptions.CaptureDevice.Key;
         
         var outParams = new StreamParameters
         {
@@ -83,6 +83,7 @@ public class PortAudioCaptureService : IDataCaptureService, IDeviceSelectable
 
     public Dictionary<int, string> GetAvailableDevices() 
         => Enumerable.Range(0, PortAudio.DeviceCount)
+            .Where(x => PortAudio.GetDeviceInfo(x).maxInputChannels > 0)
             .ToDictionary(x => x, x => PortAudio.GetDeviceInfo(x).name);
 
     public void Dispose()

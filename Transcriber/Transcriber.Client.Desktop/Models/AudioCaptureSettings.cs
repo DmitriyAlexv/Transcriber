@@ -12,6 +12,7 @@ public class AudioCaptureSettings: ReactiveObject
     private List<string> _blackList = [];
     private int _sampleRate = 16000;
     private int _channels = 1;
+    private KeyValuePair<int, string> _captureDevice = new(0, "Audio Capture Device");
 
     public CaptureMode Mode
     {
@@ -62,8 +63,17 @@ public class AudioCaptureSettings: ReactiveObject
             AudioCaptureOptions.Channels = value;
         }
     }
-
-
+    
+    public KeyValuePair<int, string> CaptureDevice
+    {
+        get => _captureDevice;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _captureDevice, value);
+            AudioCaptureOptions.CaptureDevice = value;
+        }
+    }
+    
     public AudioCaptureOptions AudioCaptureOptions
     {
         get => _audioCaptureOptions;
@@ -75,6 +85,7 @@ public class AudioCaptureSettings: ReactiveObject
             BlackList = value.BlackList;
             SampleRate = value.SampleRate;
             Channels = value.Channels;
+            CaptureDevice = value.CaptureDevice;
         }
     }
 }

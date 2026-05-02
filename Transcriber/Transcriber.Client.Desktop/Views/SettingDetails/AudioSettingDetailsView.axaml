@@ -29,6 +29,7 @@
                               SelectedItem="{Binding AudioCaptureSettings.Mode}"
                               BorderThickness="1"
                               BorderBrush="#9E9E9E"
+                              HorizontalAlignment="Stretch"
                               CornerRadius="3"
                               Padding="4">
                         <ComboBox.ItemTemplate>
@@ -220,6 +221,37 @@
                             </Button>
                         </StackPanel>
                     </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <Border BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="8"
+                IsVisible="{Binding ShowAudioDeviceSelectable}">
+                <StackPanel>
+                    <TextBlock Text="Аудиоустройство" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Foreground="#9C27B0"
+                               Margin="0,0,0,10"/>
+                    <ComboBox ItemsSource="{Binding AvailableDevices}"
+                              SelectedValue="{Binding AudioCaptureSettings.CaptureDevice}"
+                              BorderThickness="1"
+                              BorderBrush="#9E9E9E"
+                              HorizontalAlignment="Stretch"
+                              CornerRadius="3"
+                              Padding="4">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={x:Static services:CaptureDeviceConverter.Instance}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Text="Для платформ кроме Windows необходимо выбрать соответствующее аудиоустройство для захвата аудио"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
 

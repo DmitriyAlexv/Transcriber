@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -10,6 +11,7 @@ using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels.Abstractions;
 using Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
 using Transcriber.Client.Desktop.ViewModels.Controls.Shared;
+using Transcriber.Core.Abstractions;
 using Transcriber.Core.Models;
 
 namespace Transcriber.Client.Desktop.ViewModels.SettingDetails;
@@ -35,6 +37,9 @@ public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel
     public int WhiteListCount => AudioCaptureSettings.WhiteList.Count;
     public int BlackListCount => AudioCaptureSettings.BlackList.Count;
 
+    public ObservableCollection<KeyValuePair<int, string>> AvailableDevices { get; }
+    public bool ShowAudioDeviceSelectable => Singleton.AudioCaptureService is IDeviceSelectable;
+    
     public string ModeDescription
     {
         get
@@ -81,6 +86,12 @@ public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel
             CaptureMode.WhiteList,
             CaptureMode.BlackList
         ];
+        
+        AvailableDevices = 
+        [
+            ..Singleton.AudioCaptureService is IDeviceSelectable deviceSelectable ? 
+                deviceSelectable.GetAvailableDevices() : []
+        ];
 
         NavigateBackCommand = ReactiveCommand.Create(() => 
         {
@@ -106,16 +117,17 @@ public class AudioSettingDetailsViewModel : ViewModelBase, IActivatableViewModel
         });
     }
     
-    private AudioCaptureSettings Copy(AudioCaptureSettings textDisplayCaptureOptions)
+    private AudioCaptureSettings Copy(AudioCaptureSettings audioCaptureSettings)
     {
         return new AudioCaptureSettings
         {
-            Mode = textDisplayCaptureOptions.Mode,
-            WhiteList = textDisplayCaptureOptions.WhiteList,
-            BlackList = textDisplayCaptureOptions.BlackList,
-            Channels = textDisplayCaptureOptions.Channels,
-            SampleRate = textDisplayCaptureOptions.SampleRate,
-            AudioCaptureOptions = textDisplayCaptureOptions.AudioCaptureOptions
+            Mode = audioCaptureSettings.Mode,
+            WhiteList = audioCaptureSettings.WhiteList,
+            BlackList = audioCaptureSettings.BlackList,
+            Channels = audioCaptureSettings.Channels,
+            SampleRate = audioCaptureSettings.SampleRate,
+            CaptureDevice =  audioCaptureSettings.CaptureDevice,
+            AudioCaptureOptions = audioCaptureSettings.AudioCaptureOptions
         };
     }
 }
