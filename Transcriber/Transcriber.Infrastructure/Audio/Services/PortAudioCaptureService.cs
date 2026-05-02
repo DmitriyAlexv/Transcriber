@@ -6,7 +6,7 @@ using Stream = PortAudioSharp.Stream;
 
 namespace Transcriber.Infrastructure.Audio.Services;
 
-public class PortAudioCaptureService : IDataCaptureService
+public class PortAudioCaptureService : IDataCaptureService, IDeviceSelectable
 {
     private readonly object _captureLock = new();
     private readonly AudioCaptureOptions _audioCaptureOptions;
@@ -34,7 +34,7 @@ public class PortAudioCaptureService : IDataCaptureService
         _audioCaptureOptions = audioCaptureOptions;
         EnsureInitialized();
 
-        var device = audioCaptureOptions.DeviceId;
+        var device = audioCaptureOptions.CaptureDevice;
         
         var outParams = new StreamParameters
         {
@@ -80,6 +80,10 @@ public class PortAudioCaptureService : IDataCaptureService
             State = DataCaptureState.Stopped;
         }
     }
+
+    public Dictionary<int, string> GetAvailableDevices() 
+        => Enumerable.Range(0, PortAudio.DeviceCount)
+            .ToDictionary(x => x, x => PortAudio.GetDeviceInfo(x).name);
 
     public void Dispose()
     {
