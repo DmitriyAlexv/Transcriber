@@ -9,10 +9,10 @@ public class SaveTextTranscribeResultProcessor: IDataObjectProcessor<TranscribeR
     
     public async Task ProcessDataObjectAsync(TranscribeResult dataObject)
     {
-        Console.WriteLine(dataObject.Type);
-        
-        if (dataObject.Type != "Final")
+        if (dataObject.Type?.ToLower() != "final")
             return;
+        
+        CreateDirectory();
         
         var path = GetFilePath();
         var text = FormatText(dataObject.Text);
@@ -26,10 +26,10 @@ public class SaveTextTranscribeResultProcessor: IDataObjectProcessor<TranscribeR
     }
 
     private static string GetNewFileName() 
-        => $"transcript_{DateTime.Now:HH:mm:ss}_{Guid.NewGuid()}";
+        => $"transcript_{DateTime.Now:HH-mm-ss}_{Guid.NewGuid()}.txt";
 
     private static string FormatText(string? text)
-        => text != null ? $"[{DateTime.Now:HH:mm:ss}] - {text}" : string.Empty;
+        => text != null ? $"\n[{DateTime.Now:HH:mm:ss}] - {text}" : string.Empty;
 
     private string GetFilePath() 
         => Path.Combine(
@@ -38,4 +38,14 @@ public class SaveTextTranscribeResultProcessor: IDataObjectProcessor<TranscribeR
             "Transcripts",
             _fileName
         );
+    
+    private void CreateDirectory()
+    {
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Transcriber",
+            "Transcripts");
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+    }
 }
