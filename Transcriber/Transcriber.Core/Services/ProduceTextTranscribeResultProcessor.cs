@@ -3,7 +3,7 @@ using Transcriber.Core.Models;
 
 namespace Transcriber.Core.Services;
 
-public class ProduceTextDataObjectProcessor: IDataObjectProcessor<TranscribeResult>, ITranscribedTextProducer
+public class ProduceTextTranscribeResultProcessor: IDataObjectProcessor<TranscribeResult>, ITranscribedTextProducer
 {
     public event EventHandler<TextTranscribedEventArgs>? OnTextTranscribed;
     

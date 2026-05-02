@@ -16,7 +16,8 @@ public static class Singleton
 
     static Singleton()
     {
-        var transcribedTextDataPackageProcessor = new ProduceTextDataObjectProcessor();
+        var transcribedTextDataPackageProcessor = new ProduceTextTranscribeResultProcessor();
+        var transcribedTextSaveProcessor = new SaveTextTranscribeResultProcessor();
         TranscribedTextProducer = transcribedTextDataPackageProcessor;
         
         var dataProcessor = new DataProcessor(
@@ -29,11 +30,13 @@ public static class Singleton
         
         var transcribedDataProcessor = new HandledDataProcessor<TranscribeResult>(
             [
-                transcribedTextDataPackageProcessor
+                transcribedTextDataPackageProcessor,
+                transcribedTextSaveProcessor
             ]);
 
         AudioCaptureService = CreateAudioCaptureService();
         AudioCaptureService.OnDataCaptured += dataProcessor.ReceiveData;
+        AudioCaptureService.OnStatusChanged += transcribedTextSaveProcessor.HandleNewTranscriptProcess;
 
         TranscribedTextCaptureService = new ProcessedAudioDataCaptureService();
         TranscribedTextCaptureService.OnDataCaptured += transcribedDataProcessor.ReceiveData;
