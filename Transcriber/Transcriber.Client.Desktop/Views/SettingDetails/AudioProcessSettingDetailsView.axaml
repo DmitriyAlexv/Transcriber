@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.SettingDetails"
+             xmlns:avalonia="https://github.com/avaloniaui"
              mc:Ignorable="d"
              x:Class="Transcriber.Client.Desktop.Views.SettingDetails.AudioProcessSettingDetailsView"
              x:TypeArguments="vm:AudioProcessSettingDetailsViewModel"
@@ -26,12 +27,21 @@
                             <TextBlock Text="Размер пакета" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioProcessSettings.PackageSize}" 
-                                       Grid.Column="1"
-                                       FontWeight="Bold"
-                                       Foreground="#2196F3"
-                                       MinWidth="40"
-                                       TextAlignment="Right"/>
+                            <avalonia:NumericUpDown Value="{Binding AudioProcessSettings.PackageSize}"
+                                     Grid.Column="1"
+                                     FontWeight="Bold"
+                                     Minimum="100"
+                                     FormatString="{}{0} Байт"
+                                     ShowButtonSpinner="False"
+                                     Maximum="10000"
+                                     Foreground="#2196F3"
+                                     MinWidth="60"
+                                     TextAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Background="#F5F5F5"
+                                     BorderThickness="1"
+                                     BorderBrush="#E0E0E0"
+                                     CornerRadius="4"/>
                         </Grid>
                         <Slider Minimum="100" 
                                 Maximum="10000" 
@@ -39,18 +49,27 @@
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
-                    
+
                     <StackPanel>
                         <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                            <TextBlock Text="Время выполнения (мс)" 
+                            <TextBlock Text="Время выполнения" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioProcessSettings.DueTime}" 
-                                       Grid.Column="1"
-                                       FontWeight="Bold"
-                                       Foreground="#2196F3"
-                                       MinWidth="40"
-                                       TextAlignment="Right"/>
+                            <avalonia:NumericUpDown Value="{Binding AudioProcessSettings.DueTime}"
+                                     Grid.Column="1"
+                                     FontWeight="Bold"
+                                     Minimum="100"
+                                     FormatString="{}{0} мс"
+                                     ShowButtonSpinner="False"
+                                     Maximum="5000"
+                                     Foreground="#2196F3"
+                                     MinWidth="60"
+                                     TextAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Background="#F5F5F5"
+                                     BorderThickness="1"
+                                     BorderBrush="#E0E0E0"
+                                     CornerRadius="4"/>
                         </Grid>
                         <Slider Minimum="100" 
                                 Maximum="5000" 
@@ -58,18 +77,27 @@
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
-                    
+
                     <StackPanel>
                         <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                            <TextBlock Text="Минимальный период (мс)" 
+                            <TextBlock Text="Минимальный период" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioProcessSettings.MinPeriod}" 
-                                       Grid.Column="1"
-                                       FontWeight="Bold"
-                                       Foreground="#2196F3"
-                                       MinWidth="40"
-                                       TextAlignment="Right"/>
+                            <avalonia:NumericUpDown Value="{Binding AudioProcessSettings.MinPeriod}"
+                                     Grid.Column="1"
+                                     FontWeight="Bold"
+                                     Minimum="10"
+                                     FormatString="{}{0} мс"
+                                     ShowButtonSpinner="False"
+                                     Maximum="500"
+                                     Foreground="#2196F3"
+                                     MinWidth="60"
+                                     TextAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Background="#F5F5F5"
+                                     BorderThickness="1"
+                                     BorderBrush="#E0E0E0"
+                                     CornerRadius="4"/>
                         </Grid>
                         <Slider Minimum="10" 
                                 Maximum="500" 
@@ -77,18 +105,27 @@
                                 Foreground="#2196F3"
                                 Background="#E0E0E0"/>
                     </StackPanel>
-                    
+
                     <StackPanel>
                         <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                            <TextBlock Text="Максимальный период (мс)" 
+                            <TextBlock Text="Максимальный период" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioProcessSettings.MaxPeriod}" 
-                                       Grid.Column="1"
-                                       FontWeight="Bold"
-                                       Foreground="#2196F3"
-                                       MinWidth="40"
-                                       TextAlignment="Right"/>
+                            <avalonia:NumericUpDown Value="{Binding AudioProcessSettings.MaxPeriod}" 
+                                     Grid.Column="1"
+                                     FontWeight="Bold"
+                                     Minimum="1000"
+                                     FormatString="{}{0} мс"
+                                     ShowButtonSpinner="False"
+                                     Maximum="20000"
+                                     Foreground="#2196F3"
+                                     MinWidth="60"
+                                     TextAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Background="#F5F5F5"
+                                     BorderThickness="1"
+                                     BorderBrush="#E0E0E0"
+                                     CornerRadius="4"/>
                         </Grid>
                         <Slider Minimum="1000" 
                                 Maximum="20000" 

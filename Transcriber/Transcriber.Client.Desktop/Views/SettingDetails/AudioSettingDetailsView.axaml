@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:Transcriber.Client.Desktop.ViewModels.SettingDetails"
              xmlns:shared="clr-namespace:Transcriber.Client.Desktop.Views.Controls.Shared"
              xmlns:services="clr-namespace:Transcriber.Client.Desktop.Services"
+             xmlns:avalonia="https://github.com/avaloniaui"
              mc:Ignorable="d"
              x:Class="Transcriber.Client.Desktop.Views.SettingDetails.AudioSettingDetailsView"
              x:TypeArguments="vm:AudioSettingDetailsViewModel"
@@ -115,9 +116,13 @@
                             <TextBlock Text="Частота дискретизации" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioCaptureSettings.SampleRate, StringFormat='{}{0} Гц'}" 
+                            <avalonia:NumericUpDown Value="{Binding AudioCaptureSettings.SampleRate}"
                                        Grid.Column="1"
                                        FontWeight="Bold"
+                                       Minimum="8000" 
+                                       Maximum="192000" 
+                                       ShowButtonSpinner="False"
+                                       FormatString="{}{0} Гц"
                                        Foreground="#2196F3"
                                        MinWidth="60"
                                        TextAlignment="Right"/>
@@ -164,18 +169,6 @@
                                     <sys:Int32>48000</sys:Int32>
                                 </Button.CommandParameter>
                             </Button>
-                            <Button Command="{Binding SetSampleRateCommand}"
-                                    Background="#E0E0E0"
-                                    Foreground="#212121"
-                                    BorderThickness="0"
-                                    CornerRadius="3"
-                                    Padding="8,4"
-                                    Cursor="Hand">
-                                <Button.CommandParameter>
-                                    <sys:Int32>96000</sys:Int32>
-                                </Button.CommandParameter>
-                                <TextBlock Text="96 кГц"/>
-                            </Button>
                         </StackPanel>
                     </StackPanel>
                     
@@ -184,9 +177,13 @@
                             <TextBlock Text="Количество каналов" 
                                        VerticalAlignment="Center"
                                        Foreground="#212121"/>
-                            <TextBlock Text="{Binding AudioCaptureSettings.Channels, StringFormat='{}{0} канал(ов)'}" 
+                            <avalonia:NumericUpDown Value="{Binding AudioCaptureSettings.Channels}"
                                        Grid.Column="1"
                                        FontWeight="Bold"
+                                       Minimum="1" 
+                                       Maximum="8"
+                                       ShowButtonSpinner="False"
+                                       FormatString="{}{0} канал(ов)"
                                        Foreground="#2196F3"
                                        MinWidth="60"
                                        TextAlignment="Right"/>
