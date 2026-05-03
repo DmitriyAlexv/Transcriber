@@ -5,8 +5,4 @@ namespace Transcriber.Client.Desktop.ViewModels;
 public class SettingsViewModel: ViewModelBase
 {
     public SettingsNavigationViewModel SettingsNavigationViewModel { get; } = new();
-
-    public SettingsViewModel()
-    {
-    }
 }

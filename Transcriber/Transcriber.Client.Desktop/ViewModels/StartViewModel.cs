@@ -10,18 +10,12 @@ namespace Transcriber.Client.Desktop.ViewModels;
 
 public class StartViewModel : ViewModelBase
 {
-    private string _title = "Главная";
-    public string Title
-    {
-        get => _title;
-        set => this.RaiseAndSetIfChanged(ref _title, value);
-    }
-    
     private DataCaptureState _currentState = DataCaptureState.Stopped;
-    public DataCaptureState CurrentState
+
+    private DataCaptureState CurrentState
     {
         get => _currentState;
-        private set
+        set
         {
             this.RaiseAndSetIfChanged(ref _currentState, value);
             this.RaisePropertyChanged(nameof(ButtonText));

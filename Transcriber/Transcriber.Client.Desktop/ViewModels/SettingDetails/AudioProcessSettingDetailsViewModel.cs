@@ -1,5 +1,4 @@
 using System.Reactive;
-using System.Reactive.Disposables;
 using ReactiveUI;
 using Transcriber.Client.Desktop.Models;
 using Transcriber.Client.Desktop.Services;

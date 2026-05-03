@@ -3,23 +3,16 @@ using ReactiveUI;
 
 namespace Transcriber.Client.Desktop.ViewModels.Controls.SettingsView;
 
-public class SettingDetailsNavigationItemViewModel:  ViewModelBase
+public class SettingDetailsNavigationItemViewModel(
+    string icon,
+    string text,
+    string description,
+    ReactiveCommand<Unit, Unit> navigateCommand)
+    : ViewModelBase
 {
-    public string Icon { get; }
-    public string Text { get; }
-    public string Description { get; }
-    
-    public ReactiveCommand<Unit, Unit> NavigateCommand { get; }
-    
-    public SettingDetailsNavigationItemViewModel(
-        string icon, 
-        string text, 
-        string description,
-        ReactiveCommand<Unit, Unit> navigateCommand)
-    {
-        Icon = icon;
-        Text = text;
-        Description = description;
-        NavigateCommand = navigateCommand;
-    }
+    public string Icon { get; } = icon;
+    public string Text { get; } = text;
+    public string Description { get; } = description;
+
+    public ReactiveCommand<Unit, Unit> NavigateCommand { get; } = navigateCommand;
 }

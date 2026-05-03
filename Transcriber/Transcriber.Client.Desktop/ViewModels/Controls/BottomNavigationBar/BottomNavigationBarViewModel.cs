@@ -7,8 +7,8 @@ namespace Transcriber.Client.Desktop.ViewModels.Controls.BottomNavigationBar;
 
 public class BottomNavigationBarViewModel: ViewModelBase
 {
-    public StartViewModel StartViewModel { get; } = new();
-    public SettingsViewModel SettingsViewModel { get; } = new();
+    private StartViewModel StartViewModel { get; } = new();
+    private SettingsViewModel SettingsViewModel { get; } = new();
     
     private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
     private ViewModelType _currentViewModelType = ViewModelType.Home;

@@ -1,9 +1,10 @@
-import socket
-import threading
 import json
 import queue
-import time
+import socket
+import threading
+
 from vosk import Model, KaldiRecognizer
+
 
 class SingleClientAudioServer:
     def __init__(self, model_path, audio_port=9999, result_port=9998, sample_rate=16000):
@@ -31,22 +32,19 @@ class SingleClientAudioServer:
         """Рабочий поток для обработки аудиоданных"""
         print("Запущен поток обработки аудио")
 
-        self.rec.Reset()  # Сбрасываем состояние распознавателя
+        self.rec.Reset()
         self.processing_active = True
 
         while self.processing_active:
             try:
-                # Получаем аудиоданные из очереди с таймаутом
                 audio_bytes = self.audio_queue.get(timeout=0.5)
 
-                # Обрабатываем через Vosk
                 if self.rec.AcceptWaveform(audio_bytes):
                     result = json.loads(self.rec.Result())
                     text = result.get("text", "")
                     if text:
                         print(f"Распознано: {text}")
 
-                        # Отправляем финальный результат
                         self._send_result({
                             "type": "final",
                             "text": text
@@ -55,7 +53,6 @@ class SingleClientAudioServer:
                     partial = json.loads(self.rec.PartialResult())
                     partial_text = partial.get("partial", "")
 
-                    # Отправляем промежуточный результат только если он не пустой
                     if partial_text:
                         self._send_result({
                             "type": "partial",
@@ -65,7 +62,6 @@ class SingleClientAudioServer:
                 self.audio_queue.task_done()
 
             except queue.Empty:
-                # Проверяем, нужно ли продолжать работу
                 if not self.processing_active:
                     break
                 continue
@@ -81,12 +77,10 @@ class SingleClientAudioServer:
             return
 
         try:
-            # Сериализуем данные в JSON
             result_json = json.dumps(result_data) + "\n"
             self.result_client.sendall(result_json.encode('utf-8'))
         except Exception as e:
             print(f"Ошибка при отправке результата: {e}")
-            # Если клиент отключился, закрываем соединение
             self._close_result_connection()
 
     def _close_result_connection(self):
@@ -123,19 +117,16 @@ class SingleClientAudioServer:
 
             while self.running:
                 try:
-                    # Принимаем соединение
                     client_socket, client_address = self.audio_socket.accept()
                     client_socket.settimeout(0.5)
 
                     print(f"Подключен клиент аудио: {client_address}")
 
-                    # Если уже есть подключенный клиент, закрываем старое соединение
                     if self.audio_client:
                         self._close_audio_connection()
 
                     self.audio_client = client_socket
 
-                    # Буфер для данных
                     while self.running and self.audio_client:
                         try:
                             data = self.audio_client.recv(3200)
@@ -143,14 +134,12 @@ class SingleClientAudioServer:
                                 print("Клиент аудио отключился")
                                 break
                     
-                            # Отправляем данные напрямую в очередь
                             self.audio_queue.put(data)
                     
                         except Exception as e:
                             print(f"Ошибка приема аудио: {e}")
                             break
 
-                    # Закрываем соединение
                     self._close_audio_connection()
                     print("Ожидание нового подключения для аудио...")
 
@@ -179,22 +168,18 @@ class SingleClientAudioServer:
 
             while self.running:
                 try:
-                    # Принимаем соединение
                     client_socket, client_address = self.result_socket.accept()
                     client_socket.settimeout(0.5)
 
                     print(f"Подключен клиент результатов: {client_address}")
 
-                    # Если уже есть подключенный клиент, закрываем старое соединение
                     if self.result_client:
                         self._close_result_connection()
 
                     self.result_client = client_socket
 
-                    # Просто держим соединение открытым
                     while self.running and self.result_client:
                         try:
-                            # Проверяем, живо ли соединение
                             data = self.result_client.recv(1)
                             if not data:
                                 print("Клиент результатов отключился")
@@ -204,7 +189,6 @@ class SingleClientAudioServer:
                         except:
                             break
 
-                    # Закрываем соединение
                     self._close_result_connection()
                     print("Ожидание нового подключения для результатов...")
 
@@ -227,17 +211,14 @@ class SingleClientAudioServer:
 
         self.running = True
 
-        # Запускаем поток обработки аудио
         processing_thread = threading.Thread(target=self.audio_processing_worker)
         processing_thread.daemon = True
         processing_thread.start()
 
-        # Запускаем поток для приема аудио
         audio_thread = threading.Thread(target=self.handle_audio_connection)
         audio_thread.daemon = True
         audio_thread.start()
 
-        # Запускаем поток для отправки результатов
         result_thread = threading.Thread(target=self.handle_result_connection)
         result_thread.daemon = True
         result_thread.start()
@@ -260,11 +241,9 @@ class SingleClientAudioServer:
         self.running = False
         self.processing_active = False
 
-        # Закрываем все соединения
         self._close_audio_connection()
         self._close_result_connection()
 
-        # Очищаем очередь
         while not self.audio_queue.empty():
             try:
                 self.audio_queue.get_nowait()
@@ -273,12 +252,10 @@ class SingleClientAudioServer:
                 pass
 
 if __name__ == "__main__":
-    # Настройки сервера
-    MODEL_PATH = "D:/AIs/vosk-model-small-ru-0.22"  # Путь к модели
-    AUDIO_PORT = 9999  # Порт для приема аудио
-    RESULT_PORT = 9998  # Порт для отправки результатов
+    MODEL_PATH = "D:/AIs/vosk-model-small-ru-0.22"
+    AUDIO_PORT = 9999
+    RESULT_PORT = 9998
 
-    # Запускаем сервер
     server = SingleClientAudioServer(
         model_path=MODEL_PATH,
         audio_port=AUDIO_PORT,

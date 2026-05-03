@@ -8,7 +8,7 @@ namespace Transcriber.Client.Desktop.Services;
 
 public static class Singleton
 {
-    public static readonly ISettingsService SettingsService = new JsonSettingsService();
+    private static readonly ISettingsService SettingsService = new JsonSettingsService();
     public static readonly AppSettingsManager AppSettingsManager = new (SettingsService);
     public static readonly IDataCaptureService AudioCaptureService;
     public static readonly IDataCaptureService TranscribedTextCaptureService;
@@ -21,10 +21,8 @@ public static class Singleton
         TranscribedTextProducer = transcribedTextDataPackageProcessor;
         
         var dataProcessor = new DataProcessor(
-            AppSettingsManager.AudioProcessSettings.DataProcessOptions,
+            AppSettingsManager.AudioProcessSettings.DataProcessOptions, 
             [
-                //new NAudioSaveDataPackageProcessor(AppSettingsManager.AudioSettings),
-                //randomTextDataObjectProcessor,
                 new AudioSendDataPackageProcessor()
             ]);
         

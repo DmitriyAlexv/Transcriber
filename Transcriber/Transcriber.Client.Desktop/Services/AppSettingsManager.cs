@@ -8,9 +8,9 @@ namespace Transcriber.Client.Desktop.Services;
 public class AppSettingsManager: ReactiveObject
 {
     private readonly ISettingsService _settingsService;
-    private AudioCaptureSettings _audioCaptureSettings;
-    private AudioProcessSettings _audioProcessSettings;
-    private TextDisplaySettings _textDisplaySettings;
+    private AudioCaptureSettings _audioCaptureSettings = null!;
+    private AudioProcessSettings _audioProcessSettings = null!;
+    private TextDisplaySettings _textDisplaySettings = null!;
 
     public AudioCaptureSettings AudioCaptureSettings
     {

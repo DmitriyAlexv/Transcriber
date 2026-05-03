@@ -1,34 +1,19 @@
-using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Splat;
-using Transcriber.Client.Desktop.Services;
 using Transcriber.Client.Desktop.ViewModels;
 using Transcriber.Client.Desktop.Views;
 
 namespace Transcriber.Client.Desktop;
 
-public partial class App : Application
+public class App : Application
 {
-    private IServiceProvider _serviceProvider = null!;
-    
     public override void Initialize()
     {
-        /*
-        var services = new ServiceCollection();
-        ConfigureServices(services); 
-        
-        _serviceProvider = services.BuildServiceProvider();
-        
-        // Установка Locator
-        Locator.SetLocator(_serviceProvider.GetRequiredService<IDependencyResolver>());
-        */
         AvaloniaXamlLoader.Load(this);
     }
 
@@ -62,20 +47,5 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
-    }
-    
-    private void ConfigureServices(IServiceCollection services)
-    {
-        // Регистрация сервисов
-        
-        // Регистрация ViewModels
-        services.AddTransient<MainWindowViewModel>();
-        
-        // Регистрация Views
-        services.AddTransient<MainWindow>();
-        
-        // Регистрация Locator
-        services.AddSingleton<IReadonlyDependencyResolver>(sp => 
-            sp.GetRequiredService<IDependencyResolver>());
     }
 }
